@@ -13,3 +13,6 @@
 
 API
 - 위키에서 보셈 (https://github.com/lache/RacingKingLee/wiki/APIs)
+
+모니터 (윈도우용 모니터링 클라이언트)
+- monitor 폴더의 racing.cmd 파일 실행
