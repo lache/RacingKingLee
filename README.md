@@ -12,4 +12,4 @@
 - 해당 서버의 9999 포트로 접속하면 보임
 
 API
-- 위키에서 보셈
+- 위키에서 보셈 (https://github.com/lache/RacingKingLee/wiki/APIs)
