@@ -17,6 +17,11 @@ def check_int(s):
         return s[1:].isdigit()
     return s.isdigit()
 
+def register_car(token, name, color, type):
+    token_set.add(token)
+    token_carinfo_dict[token] = (name, color, type)
+    token_carpos_dict[token] = (0, 0, 0, 0)
+ 
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -49,10 +54,8 @@ class JoinHandler(tornado.web.RequestHandler):
             result['message'] = 'type is not specified!'
         else:
             token = str(uuid.uuid4().fields[-1])[:5]
-            token_set.add(token)
-            token_carinfo_dict[token] = (name, color, type)
-            token_carpos_dict[token] = (0, 0, 0, 0)
-    
+            register_car(token, name, color, type)
+
             result['result'] = 'success'
             result['token'] = token
             result['carinfo'] = token_carinfo_dict[token]
@@ -168,4 +171,8 @@ application = tornado.web.Application([
 
 if __name__ == "__main__":
     application.listen(9999)
+
+    for i in range(0, 10):
+        register_car('%d' % i, 'zone', 'black', 'go')
+    
     tornado.ioloop.IOLoop.instance().start()
