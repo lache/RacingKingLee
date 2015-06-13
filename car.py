@@ -35,14 +35,15 @@ class car:
         y = self.y
         angle = self.angle
         accel = self.accel
-        
-        x = x + accel * math.cos(math.radians(270 - angle))
-        y = y + accel * math.sin(math.radians(270 - angle))
+
+        ratio = accel * 16.0 / (60 * 60.0)
+        x = x + ratio * math.cos(math.radians(270 - angle))
+        y = y + ratio * math.sin(math.radians(270 - angle))
 
         if accel > 0:
-            accel -= tick_count
+            accel -= tick_count / 100.0
         elif accel < 0:
-            accel += tick_count
+            accel += tick_count / 100.0
 
         self.x = x
         self.y = y
