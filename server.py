@@ -5,38 +5,31 @@ import tornado.web
 import ujson as json
 import uuid
 import math
+import thread
+import sys
 
+from arena import racingArena
+from car import car
 
-token_set = set()
-token_carinfo_dict = {}
-token_carpos_dict = {}
-
+# start racing arena thread
+racing_arena = racingArena()
 
 def check_int(s):
     if s[0] in ('-', '+'):
         return s[1:].isdigit()
     return s.isdigit()
 
-def register_car(token, name, color, type):
-    token_set.add(token)
-    token_carinfo_dict[token] = (name, color, type)
-    token_carpos_dict[token] = (0, 0, 0, 0)
+
+def register_car(name, color, type):
+    global racing_arena
+
+    user_car = car(name, color, type)
+    return racing_arena.register(user_car)
  
-
-class MainHandler(tornado.web.RequestHandler):
-    def get(self):
-        global token_set
-        global token_carinfo_dict
-        global token_carpos_dict
-
-        self.write("Hello, world")
-        self.flush()
 
 class JoinHandler(tornado.web.RequestHandler):
     def get(self):
-        global token_set
-        global token_carinfo_dict
-        global token_carpos_dict
+        global racing_arena
 
         name = self.get_argument('name', None, True)
         color = self.get_argument('color', None, True)
@@ -53,50 +46,33 @@ class JoinHandler(tornado.web.RequestHandler):
             result['result'] = 'error'
             result['message'] = 'type is not specified!'
         else:
-            token = str(uuid.uuid4().fields[-1])[:5]
-            register_car(token, name, color, type)
+            user_car = register_car(name, color, type)
 
             result['result'] = 'success'
-            result['token'] = token
-            result['carinfo'] = token_carinfo_dict[token]
-            result['carpos'] = token_carpos_dict[token]
+            result['token'] = user_car.token
+            result['car'] = user_car
         
         self.write(json.dumps(result))
         self.flush()
 
 class CarPosHandler(tornado.web.RequestHandler):
     def get(self):
-        global token_set
-        global token_carinfo_dict
-        global token_carpos_dict
+        global racing_arena
 
-        self.write(json.dumps(token_carpos_dict))
+        self.write(json.dumps(racing_arena.cur_pos_dict))
         self.flush()
 
 class CarInfoHandler(tornado.web.RequestHandler):
     def get(self):
-        global token_set
-        global token_carinfo_dict
-        global token_carpos_dict
+        global racing_arena
 
-        self.write(json.dumps(token_carinfo_dict))
-        self.flush()
-
-class CarControlHandler(tornado.web.RequestHandler):
-    def get(self):
-        global token_set
-        global token_carinfo_dict
-        global token_carpos_dict
-
-        self.write(json.dumps(token_carpos_dict))
+        self.write(json.dumps(racing_arena.car_info_dict))
         self.flush()
 
 
 class DriveHandler(tornado.web.RequestHandler):
     def get(self):
-        global token_set
-        global token_carinfo_dict
-        global token_carpos_dict
+        global racing_arena
 
         token = self.get_argument('token', None, True)
         angle = self.get_argument('angle', None, True)
@@ -112,7 +88,7 @@ class DriveHandler(tornado.web.RequestHandler):
         elif accel == None:
             result['result'] = 'error'
             result['message'] = 'accel is not specified!'
-        elif token not in token_set:
+        elif token not in racing_arena.token_id_dict:
             result['result'] = 'error'
             result['message'] = 'not exist token! are you trying to hack?'
         elif check_int(angle) == False:
@@ -137,42 +113,43 @@ class DriveHandler(tornado.web.RequestHandler):
             result['result'] = 'error'
             result['message'] = 'accel must be in range [-100, 100]'
         else:
-            carpos = token_carpos_dict[token]
 
-            new_angle = carpos[2] + angle
-            new_accel = carpos[3] + accel
-
-            new_angle %= 360
-            new_accel = min(new_accel, 100)
-            new_accel = max(new_accel, -100)
-
-            x = carpos[0] + new_accel * math.cos(math.radians(270 - new_angle))
-            y = carpos[1] + new_accel * math.sin(math.radians(270 - new_angle))
-            
-            token_carpos_dict[token] = (x, y, new_angle, new_accel)
-
+            id = racing_arena.token_id_dict[token]
+            racing_arena.op_list[id] = (angle, accel)
             result['result'] = 'success'
-            result['carinfo'] = token_carinfo_dict[token]
-            result['carpos'] = token_carpos_dict[token]
         
         self.write(json.dumps(result))
         self.flush()
 
 
 application = tornado.web.Application([
-    (r"/", MainHandler),
     (r"/join", JoinHandler),
     (r"/car_pos", CarPosHandler),
     (r"/car_info", CarInfoHandler),
-    (r"/car_control", CarControlHandler),
     (r"/drive", DriveHandler),
 
 ])
 
 if __name__ == "__main__":
-    application.listen(9999)
-
-    for i in range(0, 10):
-        register_car('%d' % i, 'zone', 'black', 'go')
     
-    tornado.ioloop.IOLoop.instance().start()
+
+    # start network thread
+    if sys.argv[1] == 'REAL':
+        application.listen(9999)
+    elif sys.argv[1] == 'TEST':
+        application.listen(10000)
+    else:
+        print 'undefined option [REAL/TEST]'
+        sys.exit(-1)
+
+    for i in range(0, 2):
+        register_car('zone', 'black', 'go')
+    
+
+    try:
+        racing_arena.start()
+        tornado.ioloop.IOLoop.instance().start()
+    except KeyboardInterrupt:
+        racing_arena.keep_racing = False
+        racing_arena.join()
+        tornado.ioloop.IOLoop.instance().stop()
