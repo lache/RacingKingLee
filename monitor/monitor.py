@@ -35,8 +35,8 @@ class Monitor(object):
                 
                 self.cars[k] = avatar
             
-            self.cars[k].worldPosition.x = state[k][0] / 1000.0
-            self.cars[k].worldPosition.y = state[k][1] / 1000.0
+            self.cars[k].worldPosition.x = state[k][0] / 10.0
+            self.cars[k].worldPosition.y = state[k][1] / 10.0
             self.cars[k].worldPosition.z = 10#state[k][1]
             
             self.cars[k].localOrientation = Euler([0,0, radians(state[k][2])]).to_matrix()
