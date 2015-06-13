@@ -62,6 +62,13 @@ class CarPosHandler(tornado.web.RequestHandler):
         self.write(json.dumps(racing_arena.cur_pos_dict))
         self.flush()
 
+class CarInfoHandler(tornado.web.RequestHandler):
+    def get(self):
+        global racing_arena
+
+        self.write(json.dumps(racing_arena.car_info_dict))
+        self.flush()
+
 
 class DriveHandler(tornado.web.RequestHandler):
     def get(self):
@@ -118,6 +125,7 @@ class DriveHandler(tornado.web.RequestHandler):
 application = tornado.web.Application([
     (r"/join", JoinHandler),
     (r"/car_pos", CarPosHandler),
+    (r"/car_info", CarInfoHandler),
     (r"/drive", DriveHandler),
 
 ])

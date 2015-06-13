@@ -23,6 +23,9 @@ class car:
         self.angle = angle
         self.accel = accel
 
+    def get_info(self):
+        return (self.name, self.color, self.type)
+    
     def get_pos(self):
         return (self.x, self.y, self.angle, self.accel)
 

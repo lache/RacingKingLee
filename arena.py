@@ -18,6 +18,7 @@ class racingArena(threading.Thread):
     op_list = []
     car_list = []
 
+    car_info_dict = {}
     cur_pos_dict = {}
 
     register_lock = threading.Lock()
@@ -50,6 +51,7 @@ class racingArena(threading.Thread):
             self.car_list[id] = user_car
 
             self.cur_pos_dict[id] = user_car.get_pos()
+            self.car_info_dict[id] = user_car.get_info()
 
             self.player_count += 1
             registered = True
