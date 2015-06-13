@@ -46,8 +46,8 @@ class Monitor(object):
 monitor = Monitor()
 
 def poll():
-    print('polling')
-    #monitor.poll()
+    #print('polling')
+    monitor.poll()
 
 class User:
     
