@@ -118,7 +118,22 @@ e = engine()
 e.f_engine = 50
 
 def tick(cont):
-    print('hehe')
     e.move_tick(1)
     cont.owner.position.x, cont.owner.position.y = e.v_pos[0] * 50, e.v_pos[1] * 50
+    pass
+
+def onUp():
+    print('up')
+    pass
+
+def onDown():
+    print('down')
+    pass
+
+def onLeft():
+    print('left')
+    pass
+
+def onRight():
+    print('right')
     pass
