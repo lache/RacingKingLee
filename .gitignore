@@ -56,3 +56,4 @@ docs/_build/
 # PyBuilder
 target/
 monitor/racing.blend1
+*.blend1
