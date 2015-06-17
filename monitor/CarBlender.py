@@ -74,141 +74,6 @@ class engine:
     f_engine    = 0                             # force of engine - given by user
 
 
-    def do_tick(self, delta_t):
-
-        global sn
-        global cs
-        global velocity
-        global yawspeed
-        global wheelbase
-        global angularvelocity
-        global rot_angle
-        global sideslip
-        global slipanglefront
-        global slipanglerear
-        global steerangle
-        global weight
-        global mass
-        global front_slip
-        global rear_slip
-        global ftraction
-        global throttle
-        global resistance
-        global force
-        global torque
-        global b
-        global c
-        global acceleration
-        global inertia
-        global angular_acceleration
-        global acceleration_wc
-        global velocity_wc
-        global position_wc
-        global angle
-        global flatf
-        global flatr
-
-        global CA_F
-        global CA_R
-        global MAX_GRIP
-        global RESISTANCE
-        global DRAG
-        
-        
-        sn = math.sin(angle)
-        cs = math.cos(angle)
-        
-        
-        velocity_x = cs * velocity[1] + sn * velocity[0]
-        velocity_y = -sn * velocity[1] + cs * velocity[0]
-        
-        velocity = (velocity_x, velocity_y)
-        
-        yawspeed = wheelbase * 0.5 * angularvelocity
-        
-        if velocity_x == 0:
-            rot_angle = 0
-        else:
-            rot_angle = math.atan2(yawspeed, velocity_x)
-            
-        if velocity_x == 0:
-            sideslip = 0
-        else:
-            sideslip = math.atan2(velocity_y, velocity_x)
-
-        slipanglefront = sideslip + rot_angle - steerangle
-        slipanglerear  = sideslip - rot_angle
-        
-        weight = mass * 9.8 * 0.5
-
-        flatf_x = 0
-        flatf_y = CA_F * slipanglefront
-        flatf_y = min(MAX_GRIP, flatf_y)
-        flatf_y = max(-MAX_GRIP, flatf_y)
-        flatf_y *= weight;
-        if front_slip != 0:
-            flatf_y *= 0.5
-        flatf = (flatf_x, flatf_y)
-            
-        flatr_x = 0
-        flatr_y = CA_R * slipanglefront
-        flatr_y = min(MAX_GRIP, flatr_y)
-        flatr_y = max(-MAX_GRIP, flatr_y)
-        flatr_y *= weight
-        if rear_slip != 0:
-            flatr_y *= 0.5
-        flatr = (flatr_x, flatr_y)
-            
-        ftraction_x = 100 * (throttle- brake * velocity_x)
-        ftraction_y = 0
-        
-        if rear_slip!= 0:
-            ftraction_x *= 0.5
-        
-        ftraction = (ftraction_x, ftraction_y)
-        print(ftraction)
-
-        resistance_x = -1 * (RESISTANCE * velocity_x + DRAG * velocity_x * abs(velocity_x))
-        resistance_y = -1 * (RESISTANCE * velocity_y + DRAG * velocity_y * abs(velocity_y))
-        resistance = (resistance_x, resistance_y)
-        
-        force_x = ftraction_x + math.sin(steerangle) * flatf_x + flatf_x + resistance_x
-        force_y = ftraction_y + math.cos(steerangle) * flatf_y + flatf_y + resistance_y
-        force = (force_x, force_y)
-        
-        print(flatf)
-        print(flatr)
-        torque = b * flatf_y - c * flatr_y
-        print(torque)
-
-        acceleration_x = force_x / mass
-        acceleration_y = force_y / mass
-        acceleration = (acceleration_x, acceleration_y)
-        
-        angular_acceleration = torque / inertia
-        print(angular_acceleration)
-
-        acceleration_wc_x =  cs * acceleration_y + sn * acceleration_x
-        acceleration_wc_y = -sn * acceleration_y + cs * acceleration_x
-        acceleration_wc = (acceleration_wc_x, acceleration_wc_y)
-
-        velocity_wc_x = velocity_wc[0] + delta_t * acceleration_wc_x
-        velocity_wc_y = velocity_wc[1] + delta_t * acceleration_wc_y
-        velocity_wc = (velocity_wc_x, velocity_wc_y)
-        
-        position_wc_x = position_wc[0] + delta_t * velocity_wc_x
-        position_wc_y = position_wc[1] + delta_t * velocity_wc_y
-        position_wc = (position_wc_x, position_wc_y)
-        
-        print(position_wc)
-        
-        self.v_pos = position_wc
-
-        angularvelocity += delta_t * angular_acceleration
-        angle += delta_t * angularvelocity 
- 
-
-
     def move_tick(self, tick_count):
         global sn
         global cs
@@ -253,8 +118,8 @@ class engine:
         cs = math.cos(angle)
         
         
-        velocity_x = cs * velocity[1] + sn * velocity[0]
-        velocity_y = -sn * velocity[1] + cs * velocity[0]
+        velocity_x = cs * velocity_wc[1] + sn * velocity_wc[0]
+        velocity_y = -sn * velocity_wc[1] + cs * velocity_wc[0]
         
         velocity = (velocity_x, velocity_y)
         
@@ -285,42 +150,46 @@ class engine:
         flatf = (flatf_x, flatf_y)
             
         flatr_x = 0
-        flatr_y = CA_R * slipanglefront
+        flatr_y = CA_R * slipanglerear
         flatr_y = min(MAX_GRIP, flatr_y)
         flatr_y = max(-MAX_GRIP, flatr_y)
         flatr_y *= weight
         if rear_slip != 0:
             flatr_y *= 0.5
         flatr = (flatr_x, flatr_y)
-            
-        ftraction_x = 100 * (throttle- brake * velocity_x)
+
+        sgn = 0
+        if velocity_x > 0:
+            sgn = 1
+        elif velocity_x < 0:
+            sgn = -1
+        ftraction_x = 100 * (throttle - brake * sgn)
         ftraction_y = 0
-        
         if rear_slip!= 0:
             ftraction_x *= 0.5
         
         ftraction = (ftraction_x, ftraction_y)
-        print(ftraction)
+        #print(ftraction)
 
         resistance_x = -1 * (RESISTANCE * velocity_x + DRAG * velocity_x * abs(velocity_x))
         resistance_y = -1 * (RESISTANCE * velocity_y + DRAG * velocity_y * abs(velocity_y))
         resistance = (resistance_x, resistance_y)
         
-        force_x = ftraction_x + math.sin(steerangle) * flatf_x + flatf_x + resistance_x
-        force_y = ftraction_y + math.cos(steerangle) * flatf_y + flatf_y + resistance_y
+        force_x = ftraction_x + math.sin(steerangle) * flatf_x + flatr_x + resistance_x
+        force_y = ftraction_y + math.cos(steerangle) * flatf_y + flatr_y + resistance_y
         force = (force_x, force_y)
         
-        print(flatf)
-        print(flatr)
+        #print(flatf)
+        #print(flatr)
         torque = b * flatf_y - c * flatr_y
-        print(torque)
+        #print(torque)
 
         acceleration_x = force_x / mass
         acceleration_y = force_y / mass
         acceleration = (acceleration_x, acceleration_y)
         
         angular_acceleration = torque / inertia
-        print(angular_acceleration)
+        #print(angular_acceleration)
 
         acceleration_wc_x =  cs * acceleration_y + sn * acceleration_x
         acceleration_wc_y = -sn * acceleration_y + cs * acceleration_x
@@ -338,38 +207,6 @@ class engine:
         angle += tick_count * angularvelocity 
         
         self.v_pos = position_wc
-        
-        
-    def test(self, tick_count):
-        self.f_traction = [self.f_engine * x for x in self.v_u_head]
-        print('self.f_traction', self.f_traction)
-
-        v_mag = self.magnitude(self.v_velocity)
-        self.f_drag = [-1 * self.c_drag * v_mag * x for x in self.v_velocity]
-        print('self.f_drag', self.f_drag)
-
-        self.f_rr = [-1 * self.c_rr * x for x in self.v_velocity]
-        print('self.f_rr', self.f_rr)
-
-        self.f_long = (self.f_traction[0] + self.f_drag[0] + self.f_rr[0],
-                self.f_traction[1] + self.f_drag[1] + self.f_rr[1])
-        print('self.f_long', self.f_long)
-
-        a = [x / self.c_m for x in self.f_long]
-        print('a', a)
-
-        dt = 1.0 / 16
-        v = [dt * x for x in a]
-        print('v', v)
-        self.v_velocity = (self.v_velocity[0] + v[0], self.v_velocity[1] + v[1])
-        print('self.v_velocity', self.v_velocity)
-
-        p = [dt * x for x in v]
-        self.v_pos = (self.v_pos[0] + p[0], self.v_pos[1] + p[1])
-        print('self.v_pos', self.v_pos)
-
-    def magnitude(self, elem):
-        return math.sqrt(sum([x * x for x in elem]))
 
 
 def main():
@@ -384,7 +221,7 @@ def main():
     e = engine()
 
     for i in range(0, 1000):
-        e.do_tick(1.0)
+        e.move_tick(1.0)
         time.sleep(0.1)
         print('')
         print('')
@@ -444,19 +281,20 @@ if __name__ == '__main__':
     main()
 
 e = engine()
-e.f_engine = 50
+throttle = 1
 
 def tick(cont):
-    print('hehe')
-    e.do_tick(1.0 / 60.0)
-    
-    cont.owner.position.x, cont.owner.position.y = e.v_pos[0] * 50, e.v_pos[1] * 50
+    global position_wc
+    #print('hehe')
+    e.move_tick(1.0 / 60.0)
+    print(position_wc)
+    cont.owner.position.x, cont.owner.position.y = position_wc[0] * 1, position_wc[1] * 1
     pass
 
 def onUp():
     
     global throttle
-    throttle += 10
+    throttle += 1
     
     print('up')
     pass
@@ -464,7 +302,7 @@ def onUp():
 def onDown():
 
     global throttle
-    throttle -= 10
+    throttle -= 1
 
     print('down')
     pass
