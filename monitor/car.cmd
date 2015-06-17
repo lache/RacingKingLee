@@ -1,1 +1,1 @@
-engine.win64\blenderplayer.exe car.blend
+engine.win64\blenderplayer.exe -c car.blend

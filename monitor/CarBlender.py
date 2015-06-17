@@ -166,7 +166,7 @@ class engine:
             ftraction_x *= 0.5
         
         ftraction = (ftraction_x, ftraction_y)
-        print ftraction
+        print(ftraction)
 
         resistance_x = -1 * (RESISTANCE * velocity_x + DRAG * velocity_x * abs(velocity_x))
         resistance_y = -1 * (RESISTANCE * velocity_y + DRAG * velocity_y * abs(velocity_y))
@@ -176,17 +176,17 @@ class engine:
         force_y = ftraction_y + math.cos(steerangle) * flatf_y + flatf_y + resistance_y
         force = (force_x, force_y)
         
-        print flatf
-        print flatr
+        print(flatf)
+        print(flatr)
         torque = b * flatf_y - c * flatr_y
-        print torque
+        print(torque)
 
         acceleration_x = force_x / mass
         acceleration_y = force_y / mass
         acceleration = (acceleration_x, acceleration_y)
         
         angular_acceleration = torque / inertia
-        print angular_acceleration
+        print(angular_acceleration)
 
         acceleration_wc_x =  cs * acceleration_y + sn * acceleration_x
         acceleration_wc_y = -sn * acceleration_y + cs * acceleration_x
@@ -200,7 +200,7 @@ class engine:
         position_wc_y = position_wc[1] + delta_t * velocity_wc_y
         position_wc = (position_wc_x, position_wc_y)
         
-        print position_wc
+        print(position_wc)
         
         self.v_pos = position_wc
 
@@ -300,7 +300,7 @@ class engine:
             ftraction_x *= 0.5
         
         ftraction = (ftraction_x, ftraction_y)
-        print ftraction
+        print(ftraction)
 
         resistance_x = -1 * (RESISTANCE * velocity_x + DRAG * velocity_x * abs(velocity_x))
         resistance_y = -1 * (RESISTANCE * velocity_y + DRAG * velocity_y * abs(velocity_y))
@@ -310,17 +310,17 @@ class engine:
         force_y = ftraction_y + math.cos(steerangle) * flatf_y + flatf_y + resistance_y
         force = (force_x, force_y)
         
-        print flatf
-        print flatr
+        print(flatf)
+        print(flatr)
         torque = b * flatf_y - c * flatr_y
-        print torque
+        print(torque)
 
         acceleration_x = force_x / mass
         acceleration_y = force_y / mass
         acceleration = (acceleration_x, acceleration_y)
         
         angular_acceleration = torque / inertia
-        print angular_acceleration
+        print(angular_acceleration)
 
         acceleration_wc_x =  cs * acceleration_y + sn * acceleration_x
         acceleration_wc_y = -sn * acceleration_y + cs * acceleration_x
@@ -373,7 +373,7 @@ class engine:
 
 
 def main():
-    print 'hoho'
+    print('hoho')
     global position_wc
     global throttle
     global velocity
@@ -447,7 +447,7 @@ e = engine()
 e.f_engine = 50
 
 def tick(cont):
-	print('hehe')
+    print('hehe')
     e.do_tick(1.0 / 60.0)
     
     cont.owner.position.x, cont.owner.position.y = e.v_pos[0] * 50, e.v_pos[1] * 50
