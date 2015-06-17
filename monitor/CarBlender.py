@@ -1,6 +1,7 @@
 import math
 import time
-
+from mathutils import Euler
+from math import radians
 
 b = 1.0
 c = 1.0
@@ -288,6 +289,7 @@ def tick(cont):
     e.move_tick(1.0 / 60.0)
     print(position_wc)
     cont.owner.position.x, cont.owner.position.y = position_wc[0] * 1, position_wc[1] * 1
+    cont.owner.localOrientation = Euler([0,0, angle]).to_matrix()    
     pass
 
 def onUp():
