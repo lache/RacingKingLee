@@ -293,7 +293,9 @@ def tick(cont):
 def onUp():
     
     global throttle
+    global brake
     throttle += 1
+    brake = 0
     
     print('up')
     pass
@@ -301,7 +303,9 @@ def onUp():
 def onDown():
 
     global throttle
-    throttle -= 1
+    global brake
+    throttle = 0
+    brake = 100
 
     print('down')
     pass
@@ -309,7 +313,8 @@ def onDown():
 def onLeft():
 
     global steerangle
-    steerangle -= 3.1415 / 32.0
+    if steerangle > - 3.1415 / 4.0:
+        steerangle -= 3.1415 / 32.0
     
     print('left')
     pass
@@ -317,7 +322,8 @@ def onLeft():
 def onRight():
 
     global steerangle
-    steerangle += 3.1415 / 32.0
+    if steerangle < 3.1415 / 4.0:
+        steerangle += 3.1415 / 32.0
 
 
     print('right')
