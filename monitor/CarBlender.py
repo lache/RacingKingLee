@@ -48,7 +48,7 @@ flatf = (0, 0)
 flatr = (0, 0)
 
 DRAG = 5.0
-RESISTANCE = 30.0
+C_RESISTANCE = 30.0
 CA_R = -5.20
 CA_F = -5.0
 MAX_GRIP = 2.0
@@ -73,6 +73,7 @@ class engine:
     f_long      = (0, 0)                        # longitudinal force
     
     f_engine    = 0                             # force of engine - given by user
+
 
 
     def move_tick(self, tick_count):
@@ -107,11 +108,12 @@ class engine:
         global angle
         global flatf
         global flatr
+		global brake
 
         global CA_F
         global CA_R
         global MAX_GRIP
-        global RESISTANCE
+        global C_RESISTANCE
         global DRAG
         
         
@@ -172,15 +174,15 @@ class engine:
         ftraction = (ftraction_x, ftraction_y)
         #print(ftraction)
 
-        resistance_x = -1 * (RESISTANCE * velocity_x + DRAG * velocity_x * abs(velocity_x))
-        resistance_y = -1 * (RESISTANCE * velocity_y + DRAG * velocity_y * abs(velocity_y))
+        resistance_x = -1 * (C_RESISTANCE * velocity_x + DRAG * velocity_x * abs(velocity_x))
+        resistance_y = -1 * (C_RESISTANCE * velocity_y + DRAG * velocity_y * abs(velocity_y))
         resistance = (resistance_x, resistance_y)
         
         force_x = ftraction_x + math.sin(steerangle) * flatf_x + flatr_x + resistance_x
         force_y = ftraction_y + math.cos(steerangle) * flatf_y + flatr_y + resistance_y
         force = (force_x, force_y)
         
-        #print(flatf)
+        print("force:", force)
         #print(flatr)
         torque = b * flatf_y - c * flatr_y
         #print(torque)
@@ -281,7 +283,7 @@ if __name__ == '__main__':
     main()
 
 e = engine()
-throttle = 1
+throttle = 0
 
 def tick(cont):
     global position_wc
