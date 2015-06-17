@@ -56,25 +56,6 @@ MAX_GRIP = 2.0
 
 class engine:
 
-
-
-    c_m         = 500                           # car mass in kg
-    c_drag      = 0.5 * 0.30 * 2.2 * 1.29       # resistance force
-    c_rr        = 30 * 0.4257                   # rolling resistance - 30 times of c_drag
-    
-    v_u_head    = (0.7072, 0.7072)              # unit vector of car heading
-    v_velocity  = (0, 0)                        # vector of velocity
-    v_pos       = (0, 0)                        # position (x, y)
-    
-    f_traction  = (0, 0)                        # force of traction
-    f_drag      = (0, 0)                        # force of drag
-    f_rr        = (0, 0)                        # force of rolling resistance
-    f_long      = (0, 0)                        # longitudinal force
-    
-    f_engine    = 0                             # force of engine - given by user
-
-
-
     def move_tick(self, tick_count):
         global sn
         global cs
@@ -119,7 +100,7 @@ class engine:
         sn = math.sin(angle)
         cs = math.cos(angle)
         
-        
+        steerangle_t = steerangle * 3.1415926 / 320.0
         velocity_x = cs * velocity_wc[1] + sn * velocity_wc[0]
         velocity_y = -sn * velocity_wc[1] + cs * velocity_wc[0]
         
@@ -137,7 +118,7 @@ class engine:
         else:
             sideslip = math.atan2(velocity_y, velocity_x)
 
-        slipanglefront = sideslip + rot_angle - steerangle
+        slipanglefront = sideslip + rot_angle - steerangle_t
         slipanglerear  = sideslip - rot_angle
         
         weight = mass * 9.8 * 0.5
@@ -177,8 +158,8 @@ class engine:
         resistance_y = -1 * (C_RESISTANCE * velocity_y + DRAG * velocity_y * abs(velocity_y))
         resistance = (resistance_x, resistance_y)
         
-        force_x = ftraction_x + math.sin(steerangle) * flatf_x + flatr_x + resistance_x
-        force_y = ftraction_y + math.cos(steerangle) * flatf_y + flatr_y + resistance_y
+        force_x = ftraction_x + math.sin(steerangle_t) * flatf_x + flatr_x + resistance_x
+        force_y = ftraction_y + math.cos(steerangle_t) * flatf_y + flatr_y + resistance_y
         force = (force_x, force_y)
         
         print("force:", force)
@@ -207,25 +188,6 @@ class engine:
 
         angularvelocity += tick_count * angular_acceleration
         angle += tick_count * angularvelocity 
-        
-        self.v_pos = position_wc
-
-
-def main():
-    print('hoho')
-    global position_wc
-    global throttle
-    global velocity
-    global steerangle
-    
-    throttle = 1
-    
-    e = engine()
-
-    for i in range(0, 1000):
-        e.move_tick(0.1)
-        time.sleep(0.1)
-        print(position_wc)
 
 class car:
 
@@ -277,19 +239,44 @@ class car:
         self.accel = accel
 
 
+		
+def main():
+    print('hoho')
+    global position_wc
+    global throttle
+    global velocity
+    global steerangle
+    
+    throttle = 0
+    steerangle = 0.1
+    
+    e = engine()
+
+    for i in range(0, 1000):
+        e.move_tick(0.01)
+        time.sleep(0.01)
+        print(position_wc)
+		
 if __name__ == '__main__':
     print('main')
     main()
 
 e = engine()
 throttle = 0
+rear_slip = 0
+front_slip = 0
 
 def tick(cont):
     global position_wc
+    global angle
+    global steerangle
+	
     #print('hehe')
     e.move_tick(1.0 / 60.0)
     print(position_wc)
-    cont.owner.position.x, cont.owner.position.y = position_wc[0] * 1, position_wc[1] * 1
+    print("angle: ", angle)
+    print("steerangle: ", steerangle)
+    cont.owner.position.x, cont.owner.position.y = position_wc[0] * 0.1, position_wc[1] * 0.1
     
     from mathutils import Euler
     cont.owner.localOrientation = Euler([0,0, angle]).to_matrix()    
@@ -318,8 +305,8 @@ def onDown():
 def onLeft():
 
     global steerangle
-    if steerangle > - 3.1415 / 4.0:
-        steerangle -= 3.1415 / 32.0
+    if steerangle * 3.1415926 / 320.0 < 3.1415926 / 4.0:
+        steerangle += 1
     
     print('left')
     pass
@@ -327,9 +314,8 @@ def onLeft():
 def onRight():
 
     global steerangle
-    if steerangle < 3.1415 / 4.0:
-        steerangle += 3.1415 / 32.0
-
+    if steerangle * 3.1415926 / 320.0  > - 3.1415926 / 4.0:
+        steerangle -= 1
 
     print('right')
     pass
