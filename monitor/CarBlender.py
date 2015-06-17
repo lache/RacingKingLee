@@ -221,10 +221,9 @@ def main():
     e = engine()
 
     for i in range(0, 1000):
-        e.move_tick(1.0)
+        e.move_tick(0.1)
         time.sleep(0.1)
-        print('')
-        print('')
+        print(position_wc)
 
 class car:
 
