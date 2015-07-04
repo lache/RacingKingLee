@@ -105,10 +105,12 @@ namespace CSharp
             // wheels: 0=fr left, 1=fr right, 2 =rear right, 3=rear left
 
             Vector[] corners = new Vector[4];
+            Vector[] wheels = new Vector[4];
             Vector[] w = new Vector[4];
             for (int k = 0; k < corners.Length; k++)
             {
                 corners[k] = new Vector();
+                wheels[k] = new Vector();
                 w[k] = new Vector();
             }
 
@@ -158,6 +160,53 @@ namespace CSharp
             g.DrawLine(pen, corners[1].x, corners[1].y, corners[2].x, corners[2].y);
             g.DrawLine(pen, corners[2].x, corners[2].y, corners[3].x, corners[3].y);
             g.DrawLine(pen, corners[3].x, corners[3].y, corners[0].x, corners[0].y);
+
+
+
+
+
+            color = Color.FromArgb(0, 0, 160);
+
+            // wheels: 0=fr left, 1=fr right, 2 =rear right, 3=rear left
+
+            wheels[0].x = -type.width / 2;
+            wheels[0].y = -type.b;
+
+            wheels[1].x = type.width / 2;
+            wheels[1].y = -type.b;
+
+            wheels[2].x = type.width / 2;
+            wheels[2].y = type.c;
+
+            wheels[3].x = -type.width / 2;
+            wheels[3].y = type.c;
+
+
+            for (int i = 0; i <= 3; i++)
+            {
+                w[i].x = cs * wheels[i].x - sn * wheels[i].y;
+                w[i].y = sn * wheels[i].x + cs * wheels[i].y;
+                wheels[i].x = w[i].x;
+                wheels[i].y = w[i].y;
+            }
+
+            for (int i = 0; i <= 3; i++)
+            {
+                wheels[i].x *= scale;
+                wheels[i].y *= scale;
+                wheels[i].x += screen_pos.x;
+                wheels[i].y += screen_pos.y;
+            }
+
+
+            // "wheel spokes" to show Ackermann centre of turn
+            //
+            g.DrawLine(pen, wheels[0].x, wheels[0].y,
+                wheels[0].x - (float)Math.Cos(angle + steerangle) * 100,
+                wheels[0].y - (float)Math.Sin(angle + steerangle) * 100);
+            g.DrawLine(pen, wheels[3].x, wheels[3].y,
+                wheels[3].x - (float)Math.Cos(angle) * 100,
+                wheels[3].y - (float)Math.Sin(angle) * 100);
         }
 
         float SGN(float val)
@@ -296,10 +345,21 @@ namespace CSharp
                 if (throttle < 100)
                     throttle += 10;
             }
-            if (key == Keys.Down) // throttle down
+            else if (key == Keys.Down) // throttle down
             {
                 if (throttle >= 10)
                     throttle -= 10;
+            }
+
+            if (key == Keys.Left)
+            {
+                if (steerangle > -Environment.M_PI / 4.0)
+                    steerangle -= Environment.M_PI / 32.0f;
+            }
+            else if (key == Keys.Right)
+            {
+                if (steerangle < Environment.M_PI / 4.0)
+                    steerangle += Environment.M_PI / 32.0f;
             }
         }
     }
