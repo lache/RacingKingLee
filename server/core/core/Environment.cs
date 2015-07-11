@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace core
 {
-    public static class Environment
+    public static class RacingEnvironment
     {
         public static readonly double M_PI = Math.PI;
         public static readonly double DRAG = 5.0f;		 		/* factor for air resistance (drag) 	*/

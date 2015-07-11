@@ -53,13 +53,13 @@ namespace viewer
 
             if (key == Keys.Left)
             {
-                if (car.steerAngle > -Environment.M_PI / 4.0)
-                    car.steerAngle -= Environment.M_PI / 32.0f;
+                if (car.steerAngle > -RacingEnvironment.M_PI / 4.0)
+                    car.steerAngle -= RacingEnvironment.M_PI / 32.0f;
             }
             else if (key == Keys.Right)
             {
-                if (car.steerAngle < Environment.M_PI / 4.0)
-                    car.steerAngle += Environment.M_PI / 32.0f;
+                if (car.steerAngle < RacingEnvironment.M_PI / 4.0)
+                    car.steerAngle += RacingEnvironment.M_PI / 32.0f;
             }
 
             if (key == Keys.R)
@@ -186,7 +186,7 @@ namespace viewer
         private void ticker_Tick(object sender, System.EventArgs e)
         {
             Invalidate(false);
-            car.simulate(0.1);
+            car.simulate(0.01);
         }
     }
 }

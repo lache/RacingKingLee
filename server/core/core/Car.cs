@@ -160,18 +160,18 @@ namespace core
 
             // lateral force on front wheels = (Ca * slip angle) capped to friction circle * load
             flatf.x = 0;
-            flatf.y = Environment.CA_F * slipangleFront;
-            flatf.y = Math.Min(Environment.MAX_GRIP, flatf.y);
-            flatf.y = Math.Max(-Environment.MAX_GRIP, flatf.y);
+            flatf.y = RacingEnvironment.CA_F * slipangleFront;
+            flatf.y = Math.Min(RacingEnvironment.MAX_GRIP, flatf.y);
+            flatf.y = Math.Max(-RacingEnvironment.MAX_GRIP, flatf.y);
             flatf.y *= weight;
             if (frontSlip != 0)
                 flatf.y *= 0.5f;
 
             // lateral force on rear wheels
             flatr.x = 0;
-            flatr.y = Environment.CA_R * slipangleRear;
-            flatr.y = Math.Min(Environment.MAX_GRIP, flatr.y);
-            flatr.y = Math.Max(-Environment.MAX_GRIP, flatr.y);
+            flatr.y = RacingEnvironment.CA_R * slipangleRear;
+            flatr.y = Math.Min(RacingEnvironment.MAX_GRIP, flatr.y);
+            flatr.y = Math.Max(-RacingEnvironment.MAX_GRIP, flatr.y);
             flatr.y *= weight;
             if (rearSlip != 0)
                 flatr.y *= 0.5f;
@@ -185,8 +185,8 @@ namespace core
             // Forces and torque on body
 
             // drag and rolling resistance
-            resistance.x = -(Environment.RESISTANCE * velocity.x + Environment.DRAG * velocity.x * Math.Abs(velocity.x));
-            resistance.y = -(Environment.RESISTANCE * velocity.y + Environment.DRAG * velocity.y * Math.Abs(velocity.y));
+            resistance.x = -(RacingEnvironment.RESISTANCE * velocity.x + RacingEnvironment.DRAG * velocity.x * Math.Abs(velocity.x));
+            resistance.y = -(RacingEnvironment.RESISTANCE * velocity.y + RacingEnvironment.DRAG * velocity.y * Math.Abs(velocity.y));
 
             // sum forces
             force.x = ftraction.x + (double)Math.Sin(steerAngle) * flatf.x + flatr.x + resistance.x;
