@@ -20,7 +20,7 @@ angle = 0.0
 angularvelocity = 0.0
 
 # input
-steerangle = 0.0
+steerangle = 0
 throttle = 0.0
 brake = 0.0
 
@@ -52,6 +52,7 @@ CA_R = -5.20
 CA_F = -5.0
 MAX_GRIP = 2.0
 
+keychaser = 0
 
 
 class engine:
@@ -142,7 +143,7 @@ class engine:
         flatr = (flatr_x, flatr_y)
 
         sgn = 0
-        if velocity_x > 0:
+        if velocity_x >= 0:
             sgn = 1
         elif velocity_x < 0:
             sgn = -1
@@ -304,8 +305,15 @@ def onDown():
 
 def onLeft():
 
+    global keychaser
+    keychaser += 1
+    if keychaser % 20 != 0:
+        return
+    else:
+        keychaser = 0
+	
     global steerangle
-    if steerangle * 3.1415926 / 320.0 < 3.1415926 / 4.0:
+    if steerangle * 3.1415926 / 32.0 < 3.1415926 / 4.0:
         steerangle += 1
     
     print('left')
@@ -313,8 +321,15 @@ def onLeft():
 
 def onRight():
 
+    global keychaser
+    keychaser += 1
+    if keychaser % 20 != 0:
+        return
+    else:
+        keychaser = 0
+
     global steerangle
-    if steerangle * 3.1415926 / 320.0  > - 3.1415926 / 4.0:
+    if steerangle * 3.1415926 / 32.0 > - 3.1415926 / 4.0:
         steerangle -= 1
 
     print('right')

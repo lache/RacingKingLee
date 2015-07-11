@@ -142,11 +142,6 @@ namespace CSharp
             screen_pos.x = (float)(position_wc.x * scale + form.Width / 2.0);
             screen_pos.y = (float)(-position_wc.y * scale + form.Height / 2.0);
 
-            if (screen_pos.x < 0) screen_pos.x = form.Width;
-            if (screen_pos.y < 0) screen_pos.y = form.Height;
-            if (screen_pos.x > form.Width) screen_pos.x = 0;
-            if (screen_pos.y > form.Height) screen_pos.y = 0;
-
             for (int i = 0; i <= 3; i++)
             {
                 corners[i].x *= scale;
@@ -350,6 +345,14 @@ namespace CSharp
                 if (throttle >= 10)
                     throttle -= 10;
             }
+
+            if (key == Keys.RControlKey)	// brake
+            {
+                brake = 100;
+                throttle = 0;
+            }
+            else
+                brake = 0;
 
             if (key == Keys.Left)
             {
