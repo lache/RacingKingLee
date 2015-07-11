@@ -114,8 +114,6 @@ namespace core
 
         public void simulate(double delta_t)
         {
-            Console.WriteLine("simulate");
-
             sn = (double)Math.Sin(angle);
             cs = (double)Math.Cos(angle);
 
@@ -202,8 +200,6 @@ namespace core
             acceleration.y = force.y / type.mass;
 
             angularAcceleration = torque / type.inertia;
-
-            Console.WriteLine(angularAcceleration);
 
             // Velocity and position
 
