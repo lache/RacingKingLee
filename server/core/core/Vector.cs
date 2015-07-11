@@ -20,5 +20,10 @@ namespace core
             this.x = x;
             this.y = y;
         }
+
+        public string ToString()
+        {
+            return x.ToString() + "," + y.ToString();
+        }
     }
 }

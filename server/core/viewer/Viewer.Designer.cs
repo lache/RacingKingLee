@@ -36,7 +36,7 @@
             // ticker
             // 
             this.ticker.Enabled = true;
-            this.ticker.Interval = 10;
+            this.ticker.Interval = 5;
             this.ticker.Tick += new System.EventHandler(this.ticker_Tick);
             // 
             // Viewer

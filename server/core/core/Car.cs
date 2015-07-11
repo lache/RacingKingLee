@@ -232,5 +232,10 @@ namespace core
             //
             angle += delta_t * angularVelocity;
         }
+
+        public string printPos()
+        {
+            return positionWC.ToString() + "," + angle + "," + throttle;
+        }
     }
 }

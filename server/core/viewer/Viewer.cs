@@ -34,7 +34,7 @@ namespace viewer
             Keys key = e.KeyCode;
             if (key == Keys.Up)	// throttle up
             {
-                if (car.throttle < 100)
+                if (car.throttle < 1000)
                     car.throttle += 10;
             }
             else if (key == Keys.Down) // throttle down
@@ -186,7 +186,7 @@ namespace viewer
         private void ticker_Tick(object sender, System.EventArgs e)
         {
             Invalidate(false);
-            car.simulate(0.01);
+            car.simulate(0.005);
         }
     }
 }
