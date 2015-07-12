@@ -7,7 +7,7 @@
     {
         static void Main(string[] args)
         {
-            var service = new ApiService(ServiceType.AsyncServer);
+            var service = new ApiService(ServiceType.NancyFX);
             service.start();
         }
     }
