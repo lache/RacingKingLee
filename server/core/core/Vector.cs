@@ -21,7 +21,7 @@ namespace core
             this.y = y;
         }
 
-        public string ToString()
+        public override string ToString()
         {
             return x.ToString() + "," + y.ToString();
         }

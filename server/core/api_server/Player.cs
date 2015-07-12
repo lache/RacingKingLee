@@ -21,7 +21,7 @@ namespace api_server
             this.type = type;
         }
 
-        public string ToString()
+        public override string ToString()
         {
             return string.Format("name={0},color={1},type={2}", name, color, type);
         }

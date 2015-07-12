@@ -15,6 +15,19 @@ namespace api_server
 
         public ArenaApiModule()
         {
+            /**
+             * @api {get} /join/:name/:color/:type Join to arena
+             * @apiName join
+             * @apiGroup arena
+             * @apiParam {string} name name of your car
+             * @apiParam {string} color color of your car
+             * @apiParam {string} type type of your car
+             *
+             * @apiSuccess {string} result success
+             * @apiSuccess {string} token unique ID to control your car.
+             * @apiError {string} result error
+             * @apiError {string} message error description
+             */
             Get["/join/{name}/{color}/{type}"] = _ =>
             {
                 Dictionary<string, string> result = new Dictionary<string, string>();
@@ -49,18 +62,41 @@ namespace api_server
                 return new JavaScriptSerializer().Serialize(result);
             };
 
+            /**
+             * @api {get} /car_pos Get positions of all cars
+             * @apiName car_pos
+             * @apiGroup arena
+             *
+             * @apiSuccess {array} none Array of json "id:position" where each position consist of "x, y, angle, accel"
+             */
             Get["/car_pos"] = _ =>
             {
                 return new JavaScriptSerializer().Serialize(arena.carPosDict);
             };
 
-
+            /**
+             * @api {get} /car_info Get information of all cars
+             * @apiName car_info
+             * @apiGroup arena
+             *
+             * @apiSuccess {array} none Array of json "id:information" where each information consist of "name, color, type"
+             */
             Get["/car_info"] = _ =>
             {
                 return new JavaScriptSerializer().Serialize(arena.carInfoDict);
             };
 
-
+            /**
+             * @api {get} /accel/:token/:relativeThrottle Control your accelerator
+             * @apiName accel
+             * @apiGroup arena
+             * @apiParam {string} token When you join this arena, a token is given. Use that!
+             * @apiParam {int} relativeThrottle Relative control of your accelerator. Server accumlates your relativeThrottle to your current accelerator.
+             *
+             * @apiSuccess {string} result success
+             * @apiError {string} result error
+             * @apiError {string} message error description
+             */
             Get["/accel/{token}/{relativeThrottle}"] = _ =>
             {
                 Dictionary<string, string> result = new Dictionary<string, string>();
@@ -80,6 +116,17 @@ namespace api_server
                 return new JavaScriptSerializer().Serialize(result);
             };
 
+            /**
+             * @api {get} /handle/:token/:relativeAngle Control your handle
+             * @apiName handle
+             * @apiGroup arena
+             * @apiParam {string} token When you join this arena, a token is given. Use that!
+             * @apiParam {int} relativeAngle Radian. Relative angle of your handle. Server accumlates your relativeAngle to your current angle of handle.
+             *
+             * @apiSuccess {string} result success
+             * @apiError {string} result error
+             * @apiError {string} message error description
+             */
             Get["/handle/{token}/{relativeAngle}"] = _ =>
             {
                 Dictionary<string, string> result = new Dictionary<string, string>();
@@ -99,6 +146,16 @@ namespace api_server
                 return new JavaScriptSerializer().Serialize(result);
             };
 
+            /**
+             * @api {get} /brake/:token Stop your car
+             * @apiName brake
+             * @apiGroup arena
+             * @apiParam {string} token When you join this arena, a token is given. Use that!
+             *
+             * @apiSuccess {string} result success
+             * @apiError {string} result error
+             * @apiError {string} message error description
+             */
             Get["/brake/{token}"] = _ =>
             {
                 Dictionary<string, string> result = new Dictionary<string, string>();
