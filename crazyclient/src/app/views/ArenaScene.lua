@@ -79,6 +79,7 @@ function ArenaScene:onFullState(res)
         local params = split(v, ',')
         self.cars[k]:move(cc.p(display.cx + params[1]/POS_SCALE,
             display.cy + params[2]/POS_SCALE))
+        self.cars[k]:setRotation(0)
     end
 
     self:queryFullState()
@@ -123,6 +124,8 @@ end
 function ArenaScene:handleDelta(d)
     if not self.token then self:message('ERROR - join first') end
 
+    local nextDelta
+
     self:request(string.format('/handle/%s/%d', self.token, d), function (res)
         print(res)
     end)
@@ -148,9 +151,9 @@ function ArenaScene:createKeyboardHandler()
         elseif keyCode == cc.KeyCode.KEY_DOWN_ARROW then
             self:throttleDelta(-10)
         elseif keyCode == cc.KeyCode.KEY_LEFT_ARROW then
-            self:handleDelta(10)
+            self:handleDelta(-math.pi / 32)
         elseif keyCode == cc.KeyCode.KEY_RIGHT_ARROW then
-            self:handleDelta(-10)
+            self:handleDelta(math.pi / 32)
         elseif keyCode == cc.KeyCode.KEY_B then
             self:brake()
         end

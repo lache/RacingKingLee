@@ -7,6 +7,8 @@
         <Image Name="HelloWorld.png" />
         <Project Name="ArenaScene.csd" Type="Scene" />
         <Image Name="bg.png" />
+        <Image Name="acc.png" />
+        <Image Name="drivingwheel.png" />
       </RootFolder>
     </Group>
   </SolutionFolder>

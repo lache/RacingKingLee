@@ -67,7 +67,7 @@
             <EndColor A="255" R="255" G="255" B="255" />
             <ColorVector ScaleY="1.0000" />
           </AbstractNodeData>
-          <AbstractNodeData Name="Text_1" ActionTag="968807527" Tag="13" IconVisible="False" LeftMargin="838.0000" RightMargin="18.0000" TopMargin="13.5000" BottomMargin="603.5000" FontSize="20" LabelText="Participants&#xA;- gb&#xA;- hj&#xA;- lacti" ctype="TextObjectData">
+          <AbstractNodeData Name="lblInfo" ActionTag="968807527" Tag="13" IconVisible="False" LeftMargin="838.0000" RightMargin="18.0000" TopMargin="13.5000" BottomMargin="603.5000" FontSize="20" LabelText="Participants&#xA;- gb&#xA;- hj&#xA;- lacti" ctype="TextObjectData">
             <Size X="104.0000" Y="92.0000" />
             <AnchorPoint ScaleX="1.0000" ScaleY="1.0000" />
             <Position X="942.0000" Y="626.5000" />
@@ -77,6 +77,28 @@
             <PreSize />
             <OutlineColor A="255" R="255" G="0" B="0" />
             <ShadowColor A="255" R="110" G="110" B="110" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="acc_1" ActionTag="-310587685" Tag="14" IconVisible="False" LeftMargin="193.0000" RightMargin="639.0000" TopMargin="492.0000" BottomMargin="20.0000" ctype="SpriteObjectData">
+            <Size X="128.0000" Y="128.0000" />
+            <AnchorPoint />
+            <Position X="193.0000" Y="20.0000" />
+            <Scale ScaleX="1.0000" ScaleY="1.0000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.2010" Y="0.0313" />
+            <PreSize />
+            <FileData Type="Normal" Path="acc.png" Plist="" />
+            <BlendFunc Src="1" Dst="771" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="drivingwheel_4" ActionTag="1945188298" Tag="17" IconVisible="False" LeftMargin="36.0000" RightMargin="796.0000" TopMargin="476.0000" BottomMargin="36.0000" ctype="SpriteObjectData">
+            <Size X="128.0000" Y="128.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="100.0000" Y="100.0000" />
+            <Scale ScaleX="1.0000" ScaleY="1.0000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.1042" Y="0.1563" />
+            <PreSize />
+            <FileData Type="Normal" Path="drivingwheel.png" Plist="" />
+            <BlendFunc Src="1" Dst="771" />
           </AbstractNodeData>
         </Children>
       </ObjectData>
