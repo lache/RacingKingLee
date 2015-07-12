@@ -126,3 +126,4 @@ crazyclient/frameworks/runtime-src/proj.ios_mac/crazyclient.xcodeproj/xcuserdata
 crazyclient/frameworks/runtime-src/proj.ios_mac/crazyclient.xcodeproj/project.xcworkspace/xcuserdata/kimgeoyeob.xcuserdatad
 *.xcworkspacedata
 *.xccheckout
+*.udf
