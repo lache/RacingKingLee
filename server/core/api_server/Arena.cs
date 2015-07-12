@@ -12,6 +12,8 @@ namespace api_server
     public class ArenaApiModule : NancyModule
     {
         private static Arena arena = new Arena();
+        public static string[] carPosArray = new string[10];
+        public static int currentCarPos = 0;
 
         public ArenaApiModule()
         {
@@ -56,6 +58,12 @@ namespace api_server
                 }
 
                 string token = arena.register(name, color, type);
+                if (token == null)
+                {
+                    result["result"] = "error";
+                    result["message"] = "maximum number of player";
+                    return new JavaScriptSerializer().Serialize(result);
+                }
                 result["token"] = token;
                 result["result"] = "success";
 
@@ -68,10 +76,15 @@ namespace api_server
              * @apiGroup arena
              *
              * @apiSuccess {array} none Array of json "id:position" where each position consist of "x, y, angle, accel"
+             * @apiSuccess {x} x position of x Axis
+             * @apiSuccess {y} y position of y Axis
+             * @apiSuccess {angle} angle radian. angle of car
+             * @apiSuccess {accel} accel current acceleration power
+             * 
              */
             Get["/car_pos"] = _ =>
             {
-                return new JavaScriptSerializer().Serialize(arena.carPosDict);
+                return carPosArray[currentCarPos];
             };
 
             /**
@@ -183,14 +196,13 @@ namespace api_server
     {
         public ConcurrentQueue<string> operationQueue = new ConcurrentQueue<string>();
 
-        int curPlayer = 0;
+        public int curPlayer = 0;
 
         List<Player> playerList = new List<Player>();
 
         ConcurrentDictionary<string, int> tokenIdDict = new ConcurrentDictionary<string, int>();
         ConcurrentDictionary<int, string> idTokenDict = new ConcurrentDictionary<int, string>();
 
-        public ConcurrentDictionary<string, string> carPosDict = new ConcurrentDictionary<string, string>();
         public ConcurrentDictionary<string, string> carInfoDict = new ConcurrentDictionary<string, string>();
 
         public string register(string name, string color, string type)
@@ -205,7 +217,6 @@ namespace api_server
             var player = new Player(name, color, type);
             playerList.Add(player);
             carInfoDict[id.ToString()] = player.ToString();
-            carPosDict[id.ToString()] = player.car.printPos();
 
             return token;
         }
@@ -230,7 +241,7 @@ namespace api_server
                             playerList[id].car.brake = 0;
                             break;
                         case "handle":
-                            playerList[id].car.angle += double.Parse(op[2]);
+                            playerList[id].car.steerAngle += double.Parse(op[2]);
                             break;
                         case "brake":
                             playerList[id].car.throttle = 0;
@@ -240,14 +251,38 @@ namespace api_server
                     counter++;
                 }
 
+                StringBuilder result = new StringBuilder();
+                result.Append("{");
                 foreach (var id in Enumerable.Range(0, playerList.Count))
                 {
                     var player = playerList[id];
                     player.car.simulate(0.001);
-                    carPosDict[id.ToString()] = player.car.printPos();
-                }
 
-                Thread.Sleep(10);
+                    if (id == 0)
+                    {
+                        result.Append(string.Format("\"{0}\":\"{1},{2},{3},{4}\"",
+                            id,
+                            player.car.positionWC.x,
+                            player.car.positionWC.y,
+                            player.car.steerAngle,
+                            player.car.throttle));
+                    }
+                    else
+                    {
+                        result.Append(string.Format(",\"{0}\":\"{1},{2},{3},{4}\"",
+                            id,
+                            player.car.positionWC.x,
+                            player.car.positionWC.y,
+                            player.car.steerAngle,
+                            player.car.throttle));
+                    }
+                }
+                result.Append("}");
+                int pos = (ArenaApiModule.currentCarPos + 1) % ArenaApiModule.carPosArray.Length;
+                ArenaApiModule.carPosArray[pos] = result.ToString();
+                ArenaApiModule.currentCarPos = pos;
+
+                Thread.Sleep(20);
             }
         }
 
