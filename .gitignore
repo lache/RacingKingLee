@@ -119,3 +119,10 @@ _ReSharper*/
 #Test files
 *.testsettings
 server/core/packages
+crazyclient/runtime/mac/crazyclient-desktop.app
+crazyclient/frameworks/cocos2d-x/cocos/scripting/lua-bindings/proj.ios_mac/cocos2d_lua_bindings.xcodeproj/xcuserdata
+crazyclient/frameworks/cocos2d-x/tools/simulator/libsimulator/proj.ios_mac/libsimulator.xcodeproj/xcuserdata/kimgeoyeob.xcuserdatad
+crazyclient/frameworks/runtime-src/proj.ios_mac/crazyclient.xcodeproj/xcuserdata/kimgeoyeob.xcuserdatad
+crazyclient/frameworks/runtime-src/proj.ios_mac/crazyclient.xcodeproj/project.xcworkspace/xcuserdata/kimgeoyeob.xcuserdatad
+*.xcworkspacedata
+*.xccheckout
