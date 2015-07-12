@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiService.cs" />
     <Compile Include="Arena.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
