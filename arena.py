@@ -22,7 +22,7 @@ class racingArena(threading.Thread):
     car_list = []
 
     car_info_dict = {}
-    cur_pos_dict = {}
+    cur_pos_list = []
 
     register_lock = threading.Lock()
 
@@ -63,7 +63,7 @@ class racingArena(threading.Thread):
             
             self.car_list[id] = user_car
 
-            self.cur_pos_dict[id] = user_car.get_pos()
+            self.cur_pos_list.append(user_car.get_pos())
             self.car_info_dict[id] = user_car.get_info()
 
             self.player_count += 1
@@ -83,40 +83,40 @@ class racingArena(threading.Thread):
 
             idle = 16
             start_time = datetime.now()
-
+            
             for id in range(0, self.player_count):
 
                 accel = self.op_accel_list[id]
                 handle = self.op_handle_list[id]
                 brake = self.op_brake_list[id]
 
-                user_car = self.car_list[id]
-                
+                cur_car = self.car_list[id]
+               
                 # consume operation
                 if accel != None:
-                    user_car.throttle += accel
-                    user_car.brake = 0
-                    user_car.throttle = max(-100, user_car.throttle)
-                    user_car.throttle = min( 100, user_car.throttle)
+                    cur_car.throttle += accel
+                    cur_car.brake = 0
+                    cur_car.throttle = max(-100, cur_car.throttle)
+                    cur_car.throttle = min( 100, cur_car.throttle)
 
                 if handle != None:
-                    user_car.steer_angle += handle
-                    user_car.steer_angle = max(-car.PI / 4.0, user_car.steer_angle)
-                    user_car.steer_angle = min( car.PI / 4.0, user_car.steer_angle)
+                    cur_car.steer_angle += handle
+                    cur_car.steer_angle = max(-car.car.PI / 4.0, cur_car.steer_angle)
+                    cur_car.steer_angle = min( car.car.PI / 4.0, cur_car.steer_angle)
 
                 if brake != None and brake == True:
-                    user_car.brake = 100
-                    user_car.throttle = 0
+                    cur_car.brake = 100
+                    cur_car.throttle = 0
 
                 self.op_accel_list[id] = None
                 self.op_handle_list[id] = None
                 self.op_brake_list[id] = None
 
                 # update position
-                user_car.move_tick(idle / 1000.0)
+                cur_car.move_tick(idle / 1000.0)
 
                 # update position info for API
-                self.cur_pos_dict[id] = user_car.get_pos()
+                self.cur_pos_list[id] = cur_car.get_pos()
 
             end_time = datetime.now()
             

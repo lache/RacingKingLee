@@ -11,16 +11,24 @@ import sys
 from arena import racingArena
 from car import car
 
+
 # start racing arena thread
 racing_arena = racingArena()
+
 
 def check_int(s):
     if s[0] in ('-', '+'):
         return s[1:].isdigit()
     return s.isdigit()
 
+
 def check_double(s):
-    return isinstance(s, float)
+    try:
+        float(s)
+    except ValueError:
+        return False
+    return True
+
 
 def register_car(name, color, type):
     global racing_arena
@@ -61,7 +69,7 @@ class CarPosHandler(tornado.web.RequestHandler):
     def get(self):
         global racing_arena
 
-        self.write(json.dumps(racing_arena.cur_pos_dict))
+        self.write(json.dumps(racing_arena.cur_pos_list))
         self.flush()
 
 class CarInfoHandler(tornado.web.RequestHandler):
@@ -131,7 +139,7 @@ class HandleHandler(tornado.web.RequestHandler):
             result['message'] = 'not exist token! are you trying to hack?'
         elif check_double(angle) == False:
             result['result'] = 'error'
-            result['message'] = 'angle must be integer'
+            result['message'] = 'angle must be float'
 
         if 'result' in result:
             self.write(json.dumps(result))

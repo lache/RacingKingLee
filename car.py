@@ -5,6 +5,10 @@ class vector:
     x = 0.0
     y = 0.0
 
+    def __init__(self):
+        self.X = 0.0
+        self.y = 0.0
+
 
 class car:
 
@@ -83,6 +87,34 @@ class car:
         self.name = name
         self.color = color
         self.type = type
+
+        self.steer_angle = 0.0
+        self.throttle = 0
+        self.brake = 0
+        self.rear_slip = 0
+        self.front_slip = 0
+        self.angle = 0.0
+        self.position_wc = vector()
+        self.velocity_wc = vector()
+        self.angular_velocity = 0.0
+        self.velocity = vector()
+        self.acceleration_wc = vector()
+        self.rot_angle = 0.0
+        self.side_slip = 0.0
+        self.slipangle_front = 0.0
+        self.slipangle_rear = 0.0
+        self.force = vector()
+        self.resistance = vector()
+        self.acceleration = vector()
+        self.torque = 0.0
+        self.angular_acceleration = 0.0
+        self.sn = 0.0
+        self.cs = 0.0
+        self.yawspeed = 0.0
+        self.weight = 0.0
+        self.ftraction = vector()
+        self.flatf = vector()
+        self.flatr = vector()
 
     def get_info(self):
         return (self.name, self.color, self.type)
