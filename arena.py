@@ -15,7 +15,10 @@ class racingArena(threading.Thread):
     id_token_list = []
     token_id_dict = {}
 
-    op_list = []
+    op_accel_list = []
+    op_handle_list = []
+    op_brake_list = []
+    
     car_list = []
 
     car_info_dict = {}
@@ -24,12 +27,19 @@ class racingArena(threading.Thread):
     register_lock = threading.Lock()
 
     def __init__(self):
+        
         max_count = self.max_player_count
+        
         self.id_token_list = [None] * max_count
-        self.op_list = [None] * max_count
+        
+        self.op_accel_list = [None] * max_count
+        self.op_handle_list = [None] * max_count
+        self.op_brake_list = [None] * max_count
+        
         self.car_list = [None] * max_count
 
         threading.Thread.__init__(self)
+
 
     def register(self, user_car):
 
@@ -47,7 +57,10 @@ class racingArena(threading.Thread):
             self.id_token_list[id] = token
             self.token_id_dict[token] = id
 
-            self.op_list[id] = None
+            self.op_accel_list[id] = None
+            self.op_handle_list[id] = None
+            self.op_brake_list[id] = None
+            
             self.car_list[id] = user_car
 
             self.cur_pos_dict[id] = user_car.get_pos()
@@ -63,25 +76,44 @@ class racingArena(threading.Thread):
 
         return user_car
 
+
     def run(self):
 
         while self.keep_racing:
 
+            idle = 16
             start_time = datetime.now()
 
             for id in range(0, self.player_count):
 
-                op = self.op_list[id]
+                accel = self.op_accel_list[id]
+                handle = self.op_handle_list[id]
+                brake = self.op_brake_list[id]
+
                 user_car = self.car_list[id]
                 
                 # consume operation
-                if op != None:
-                    user_car.angle = op[0]
-                    user_car.accel = op[1]
-                self.op_list[id] = None
+                if accel != None:
+                    user_car.throttle += accel
+                    user_car.brake = 0
+                    user_car.throttle = max(-100, user_car.throttle)
+                    user_car.throttle = min( 100, user_car.throttle)
+
+                if handle != None:
+                    user_car.steer_angle += handle
+                    user_car.steer_angle = max(-car.PI / 4.0, user_car.steer_angle)
+                    user_car.steer_angle = min( car.PI / 4.0, user_car.steer_angle)
+
+                if brake != None and brake == True:
+                    user_car.brake = 100
+                    user_car.throttle = 0
+
+                self.op_accel_list[id] = None
+                self.op_handle_list[id] = None
+                self.op_brake_list[id] = None
 
                 # update position
-                user_car.move_tick(1)
+                user_car.move_tick(idle / 1000.0)
 
                 # update position info for API
                 self.cur_pos_dict[id] = user_car.get_pos()
@@ -90,7 +122,6 @@ class racingArena(threading.Thread):
             
             # sleep for next tick
             elapsed = end_time - start_time
-            idle = 16
             idle -= elapsed.microseconds / 1000
             if idle < 0:
                 idle = 0

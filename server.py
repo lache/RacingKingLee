@@ -19,6 +19,8 @@ def check_int(s):
         return s[1:].isdigit()
     return s.isdigit()
 
+def check_double(s):
+    return isinstance(s, float)
 
 def register_car(name, color, type):
     global racing_arena
@@ -69,31 +71,23 @@ class CarInfoHandler(tornado.web.RequestHandler):
         self.write(json.dumps(racing_arena.car_info_dict))
         self.flush()
 
-
-class DriveHandler(tornado.web.RequestHandler):
+class AccelHandler(tornado.web.RequestHandler):
     def get(self):
         global racing_arena
 
         token = self.get_argument('token', None, True)
-        angle = self.get_argument('angle', None, True)
         accel = self.get_argument('accel', None, True)
 
         result = {}
         if token == None:
             result['result'] = 'error'
             result['message'] = 'token is not specified!'
-        elif angle == None:
-            result['result'] = 'error'
-            result['message'] = 'angle is not specified!'
         elif accel == None:
             result['result'] = 'error'
             result['message'] = 'accel is not specified!'
         elif token not in racing_arena.token_id_dict:
             result['result'] = 'error'
             result['message'] = 'not exist token! are you trying to hack?'
-        elif check_int(angle) == False:
-            result['result'] = 'error'
-            result['message'] = 'angle must be integer'
         elif check_int(accel) == False:
             result['result'] = 'error'
             result['message'] = 'accel must be integer'
@@ -103,30 +97,96 @@ class DriveHandler(tornado.web.RequestHandler):
             self.flush()
             return
         
-        angle = int(angle)
         accel = int(accel)
 
-        if 0 > angle or angle > 360:
-            result['result'] = 'error'
-            result['message'] = 'angle must be in range [0, 360]'
-        elif -101 > accel or accel > 100:
+        if -101 > accel or accel > 100:
             result['result'] = 'error'
             result['message'] = 'accel must be in range [-100, 100]'
         else:
 
             id = racing_arena.token_id_dict[token]
-            racing_arena.op_list[id] = (angle, accel)
+            racing_arena.op_accel_list[id] = accel
             result['result'] = 'success'
         
         self.write(json.dumps(result))
         self.flush()
+        
+
+class HandleHandler(tornado.web.RequestHandler):
+    def get(self):
+        global racing_arena
+
+        token = self.get_argument('token', None, True)
+        angle = self.get_argument('angle', None, True)
+
+        result = {}
+        if token == None:
+            result['result'] = 'error'
+            result['message'] = 'token is not specified!'
+        elif angle == None:
+            result['result'] = 'error'
+            result['message'] = 'angle is not specified!'
+        elif token not in racing_arena.token_id_dict:
+            result['result'] = 'error'
+            result['message'] = 'not exist token! are you trying to hack?'
+        elif check_double(angle) == False:
+            result['result'] = 'error'
+            result['message'] = 'angle must be integer'
+
+        if 'result' in result:
+            self.write(json.dumps(result))
+            self.flush()
+            return
+        
+        angle = float(angle)
+
+        if -car.PI / 4 > angle or angle > car.PI / 4:
+            result['result'] = 'error'
+            result['message'] = 'angle must be in range [-PI / 4, PI / 4]'
+        else:
+            id = racing_arena.token_id_dict[token]
+            racing_arena.op_handle_list[id] = angle
+            result['result'] = 'success'
+        
+        self.write(json.dumps(result))
+        self.flush()
+        
+        
+class BrakeHandler(tornado.web.RequestHandler):
+    def get(self):
+        global racing_arena
+
+        token = self.get_argument('token', None, True)
+
+        result = {}
+        if token == None:
+            result['result'] = 'error'
+            result['message'] = 'token is not specified!'
+        elif token not in racing_arena.token_id_dict:
+            result['result'] = 'error'
+            result['message'] = 'not exist token! are you trying to hack?'
+
+        if 'result' in result:
+            self.write(json.dumps(result))
+            self.flush()
+            return
+
+        id = racing_arena.token_id_dict[token]
+        racing_arena.op_brake_list[id] = True
+        result['result'] = 'success'
+        
+        self.write(json.dumps(result))
+        self.flush()
+
 
 
 application = tornado.web.Application([
     (r"/join", JoinHandler),
     (r"/car_pos", CarPosHandler),
     (r"/car_info", CarInfoHandler),
-    (r"/drive", DriveHandler),
+    (r"/accel", AccelHandler),
+    (r"/handle", HandleHandler),
+    (r"/brake", BrakeHandler),
 
 ])
 
