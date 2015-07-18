@@ -4,7 +4,7 @@ ArenaScene.RESOURCE_FILENAME = 'ArenaScene.csb'
 
 require('json')
 
-local POS_SCALE = 50
+local POS_SCALE = 1
 
 function ArenaScene:onCreate()
     self.cars = {}
@@ -68,7 +68,7 @@ local function split(inputstr, sep)
 end
 
 function ArenaScene:onFullState(res)
-    print(res)
+    --print(res)
     local fs = json.decode(res, 1)
     for k, v in pairs(fs) do
         --print(k,v)
@@ -93,7 +93,9 @@ end
 function ArenaScene:request(url, cb)
     local xhr = cc.XMLHttpRequest:new()
     xhr.responseType = cc.XMLHTTPREQUEST_RESPONSE_STRING
-    xhr:open("GET", "http://cosmosworld.cafe24.com:9999" .. url)
+    local fullUrl = "http://cosmosworld.cafe24.com:9999" .. url
+    xhr:open("GET", fullUrl)
+    --xhr:open("GET", "http://localhost:9999" .. url)
 
     local function onReadyStateChange()
         if xhr.readyState == 4 and (xhr.status >= 200 and xhr.status < 207) then
@@ -105,7 +107,7 @@ function ArenaScene:request(url, cb)
                 print(xhr.response)
             end
         else
-            print("[ERROR] xhr.readyState is:", xhr.readyState, "xhr.status is: ",xhr.status)
+            print("[ERROR] xhr.readyState is:", xhr.readyState, "xhr.status is: ",xhr.status,fullUrl)
         end
     end
 

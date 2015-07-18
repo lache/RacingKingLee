@@ -61,7 +61,7 @@
 
 - (void) startRequest:(NSURLRequest *)request
 {
-    NSLog(@"Starting to load %@", srcURL);
+    //NSLog(@"Starting to load %@", srcURL);
     finish = false;
 
     self.responseData = [NSMutableData data];
@@ -90,7 +90,7 @@
  **/
 - (void) connection:(NSURLConnection *)connection 
  didReceiveResponse:(NSURLResponse *)response {
-    NSLog(@"Received response from request to url %@", srcURL);
+    //NSLog(@"Received response from request to url %@", srcURL);
     
     NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
     //NSLog(@"All headers = %@", [httpResponse allHeaderFields]);
