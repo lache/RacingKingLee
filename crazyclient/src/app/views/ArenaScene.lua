@@ -40,6 +40,8 @@ end
 function ArenaScene:queryFullState()
     self:request('/car_pos', function (res)
         self:onFullState(res)
+    end, function (res)
+        self:queryFullState() -- 어떤 이유에서라도 실패했다면 재시도한다.
     end)
 end
 
@@ -89,7 +91,7 @@ function ArenaScene:createCar(k)
     self.cars[k] = s
 end
 
-function ArenaScene:request(url, cb)
+function ArenaScene:request(url, cb, cberr)
     local xhr = cc.XMLHttpRequest:new()
     xhr.responseType = cc.XMLHTTPREQUEST_RESPONSE_STRING
     local fullUrl = "http://cosmosworld.cafe24.com:9999" .. url
@@ -106,7 +108,11 @@ function ArenaScene:request(url, cb)
                 print(xhr.response)
             end
         else
-            print("[ERROR] xhr.readyState is:", xhr.readyState, "xhr.status is: ",xhr.status,fullUrl)
+            if cberr then
+                cberr()
+            else
+                print("[ERROR] xhr.readyState is:", xhr.readyState, "xhr.status is: ",xhr.status,fullUrl)
+            end
         end
     end
 
