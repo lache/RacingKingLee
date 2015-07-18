@@ -35,7 +35,11 @@ def register_car(name, color, type):
 
     user_car = car(name, color, type)
     return racing_arena.register(user_car)
- 
+
+def deregister_car(id):
+    global racing_arena
+
+    return racing_arena.deregister(id)
 
 class JoinHandler(tornado.web.RequestHandler):
     def get(self):
@@ -48,13 +52,13 @@ class JoinHandler(tornado.web.RequestHandler):
         result = {}
         if name == None:
             result['result'] = 'error'
-            result['message'] = 'name is not specified!'
+            result['message'] = 'name not specified!'
         elif color == None:
             result['result'] = 'error'
-            result['message'] = 'color is not specified!'
+            result['message'] = 'color not specified!'
         elif type == None:
             result['result'] = 'error'
-            result['message'] = 'type is not specified!'
+            result['message'] = 'type not specified!'
         else:
             user_car = register_car(name, color, type)
 
@@ -65,11 +69,34 @@ class JoinHandler(tornado.web.RequestHandler):
         self.write(json.dumps(result))
         self.flush()
 
+class LeaveHandler(tornado.web.RequestHandler):
+    def get(self):
+        global racing_arena
+
+        id = self.get_argument('id', None, True)
+
+        result = {}
+        if id == None:
+            result['result'] = 'error'
+            result['message'] = 'id not specified!'
+        elif check_int(id) == False:
+            result['result'] = 'error'
+            result['message'] = 'id should be int type!'
+        elif int(id) not in racing_arena.car_info_dict:
+            result['result'] = 'error'
+            result['message'] = 'id not exist!'
+        else:
+            deregister_car(int(id))
+            result['result'] = 'success'
+        
+        self.write(json.dumps(result))
+        self.flush()
+
 class CarPosHandler(tornado.web.RequestHandler):
     def get(self):
         global racing_arena
 
-        self.write(json.dumps(racing_arena.cur_pos_list))
+        self.write(json.dumps(racing_arena.car_pos_dict))
         self.flush()
 
 class CarInfoHandler(tornado.web.RequestHandler):
@@ -77,6 +104,29 @@ class CarInfoHandler(tornado.web.RequestHandler):
         global racing_arena
 
         self.write(json.dumps(racing_arena.car_info_dict))
+        self.flush()
+
+class CarDetailHandler(tornado.web.RequestHandler):
+    def get(self):
+        global racing_arena
+
+        id = self.get_argument('id', None, True)
+
+        result = {}
+        if id == None:
+            result['result'] = 'error'
+            result['message'] = 'id not specified!'
+        elif check_int(id) == False:
+            result['result'] = 'error'
+            result['message'] = 'id should be int type!'
+        elif int(id) not in racing_arena.car_info_dict:
+            result['result'] = 'error'
+            result['message'] = 'id not exist!'
+        else:
+            result['id'] = id
+            result['car'] = racing_arena.car_list[int(id)]
+        
+        self.write(json.dumps(result))
         self.flush()
 
 class AccelHandler(tornado.web.RequestHandler):
@@ -89,10 +139,10 @@ class AccelHandler(tornado.web.RequestHandler):
         result = {}
         if token == None:
             result['result'] = 'error'
-            result['message'] = 'token is not specified!'
+            result['message'] = 'token not specified!'
         elif accel == None:
             result['result'] = 'error'
-            result['message'] = 'accel is not specified!'
+            result['message'] = 'accel not specified!'
         elif token not in racing_arena.token_id_dict:
             result['result'] = 'error'
             result['message'] = 'not exist token! are you trying to hack?'
@@ -130,10 +180,10 @@ class HandleHandler(tornado.web.RequestHandler):
         result = {}
         if token == None:
             result['result'] = 'error'
-            result['message'] = 'token is not specified!'
+            result['message'] = 'token not specified!'
         elif angle == None:
             result['result'] = 'error'
-            result['message'] = 'angle is not specified!'
+            result['message'] = 'angle not specified!'
         elif token not in racing_arena.token_id_dict:
             result['result'] = 'error'
             result['message'] = 'not exist token! are you trying to hack?'
@@ -169,7 +219,7 @@ class BrakeHandler(tornado.web.RequestHandler):
         result = {}
         if token == None:
             result['result'] = 'error'
-            result['message'] = 'token is not specified!'
+            result['message'] = 'token not specified!'
         elif token not in racing_arena.token_id_dict:
             result['result'] = 'error'
             result['message'] = 'not exist token! are you trying to hack?'
@@ -190,11 +240,14 @@ class BrakeHandler(tornado.web.RequestHandler):
 
 application = tornado.web.Application([
     (r"/join", JoinHandler),
+    (r"/leave", LeaveHandler),
     (r"/car_pos", CarPosHandler),
     (r"/car_info", CarInfoHandler),
+    (r"/car_detail", CarDetailHandler),
     (r"/accel", AccelHandler),
     (r"/handle", HandleHandler),
     (r"/brake", BrakeHandler),
+    (r"/", BrakeHandler),
 
 ])
 
