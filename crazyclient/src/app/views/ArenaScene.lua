@@ -22,7 +22,7 @@ function ArenaScene:bindJoin()
             if string.len(username) > 0 then
                 plJoin:hide()
                 self:message('INFO - wait...')
-                local qs = string.format('/join/%s/red/normal', username)
+                local qs = string.format('/join?name=%s&color=red&type=normal', username)
                 self:request(qs, function (res)
                     local resj = json.decode(res, 1)
                     self:message('INFO - joined ' .. resj.token)
@@ -68,7 +68,7 @@ local function split(inputstr, sep)
 end
 
 function ArenaScene:onFullState(res)
-    --print(res)
+    --print('onFullState', res)
     local fs = json.decode(res, 1)
     for k, v in pairs(fs) do
         --print(k,v)
@@ -76,10 +76,9 @@ function ArenaScene:onFullState(res)
             self:createCar(k)
         end
 
-        local params = split(v, ',')
-        self.cars[k]:move(cc.p(display.cx + params[1]/POS_SCALE,
-            display.cy + params[2]/POS_SCALE))
-        self.cars[k]:setRotation(0)
+        self.cars[k]:move(cc.p(display.cx + v[1]/POS_SCALE,
+            display.cy + v[2]/POS_SCALE))
+        self.cars[k]:setRotation(v[3] / math.pi * 180)
     end
 
     self:queryFullState()
@@ -118,7 +117,7 @@ end
 function ArenaScene:throttleDelta(d)
     if not self.token then self:message('ERROR - join first') end
 
-    self:request(string.format('/accel/%s/%d', self.token, d), function (res)
+    self:request(string.format('/accel?token=%s&accel=%d', self.token, d), function (res)
         print(res)
     end)
 end
@@ -128,7 +127,7 @@ function ArenaScene:handleDelta(d)
 
     local nextDelta
 
-    self:request(string.format('/handle/%s/%d', self.token, d), function (res)
+    self:request(string.format('/handle?token=%s&angle=%f', self.token, d), function (res)
         print(res)
     end)
 end
@@ -136,7 +135,7 @@ end
 function ArenaScene:brake()
     if not self.token then self:message('ERROR - join first') end
 
-    self:request(string.format('/brake/%s', self.token), function (res)
+    self:request(string.format('/brake?token=%s', self.token), function (res)
         print(res)
     end)
 end
@@ -149,13 +148,13 @@ function ArenaScene:createKeyboardHandler()
         elseif keyCode == cc.KeyCode.KEY_MENU then
         elseif keyCode == cc.KeyCode.KEY_S then
         elseif keyCode == cc.KeyCode.KEY_UP_ARROW then
-            self:throttleDelta(10)
+            self:throttleDelta(50)
         elseif keyCode == cc.KeyCode.KEY_DOWN_ARROW then
-            self:throttleDelta(-10)
+            self:throttleDelta(-50)
         elseif keyCode == cc.KeyCode.KEY_LEFT_ARROW then
-            self:handleDelta(-math.pi / 32)
+            self:handleDelta(-math.pi / 256)
         elseif keyCode == cc.KeyCode.KEY_RIGHT_ARROW then
-            self:handleDelta(math.pi / 32)
+            self:handleDelta(math.pi / 256)
         elseif keyCode == cc.KeyCode.KEY_B then
             self:brake()
         end
