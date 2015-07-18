@@ -6,13 +6,26 @@
       <ObjectData Name="Scene" Tag="5" ctype="GameNodeObjectData">
         <Size X="960.0000" Y="640.0000" />
         <Children>
-          <AbstractNodeData Name="spBg" CanEdit="False" ActionTag="160207034" Tag="11" IconVisible="False" ctype="SpriteObjectData">
+          <AbstractNodeData Name="Panel_1" CanEdit="False" ActionTag="-998117587" Tag="12" IconVisible="False" TouchEnable="True" ComboBoxIndex="1" ColorAngle="90.0000" ctype="PanelObjectData">
             <Size X="960.0000" Y="640.0000" />
             <AnchorPoint />
             <Position />
             <Scale ScaleX="1.0000" ScaleY="1.0000" />
             <CColor A="255" R="255" G="255" B="255" />
             <PrePosition />
+            <PreSize X="1.0000" Y="1.0000" />
+            <SingleColor A="255" R="150" G="200" B="255" />
+            <FirstColor A="255" R="150" G="200" B="255" />
+            <EndColor A="255" R="255" G="255" B="255" />
+            <ColorVector ScaleY="1.0000" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="spBg" ActionTag="160207034" Tag="11" IconVisible="False" ctype="SpriteObjectData">
+            <Size X="960.0000" Y="640.0000" />
+            <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
+            <Position X="480.0000" Y="320.0000" />
+            <Scale ScaleX="1.0000" ScaleY="1.0000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition X="0.5000" Y="0.5000" />
             <PreSize />
             <FileData Type="Normal" Path="bg.png" Plist="" />
             <BlendFunc Src="770" Dst="771" />
@@ -31,7 +44,7 @@
           <AbstractNodeData Name="plJoin" ActionTag="-942728549" Tag="7" IconVisible="False" PositionPercentXEnabled="True" LeftMargin="280.0000" RightMargin="280.0000" TopMargin="40.0000" BottomMargin="550.0000" TouchEnable="True" BackColorAlpha="102" ComboBoxIndex="1" ColorAngle="90.0000" ctype="PanelObjectData">
             <Size X="400.0000" Y="50.0000" />
             <Children>
-              <AbstractNodeData Name="btnJoin" ActionTag="1217790221" Tag="5" IconVisible="False" LeftMargin="285.0000" RightMargin="15.0000" TopMargin="6.0000" BottomMargin="8.0000" TouchEnable="True" FontSize="36" ButtonText="Join" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="16" Scale9Height="14" ctype="ButtonObjectData">
+              <AbstractNodeData Name="btnJoin" ActionTag="1217790221" Tag="5" IconVisible="False" LeftMargin="285.0000" RightMargin="15.0000" TopMargin="6.0000" BottomMargin="8.0000" TouchEnable="True" FontSize="36" ButtonText="Join" Scale9Enable="True" LeftEage="15" RightEage="15" TopEage="11" BottomEage="11" Scale9OriginX="15" Scale9OriginY="11" Scale9Width="16" Scale9Height="14" OutlineSize="0" ShadowOffsetX="0" ShadowOffsetY="0" ctype="ButtonObjectData">
                 <Size X="100.0000" Y="36.0000" />
                 <AnchorPoint ScaleX="0.5000" ScaleY="0.5000" />
                 <Position X="335.0000" Y="26.0000" />
@@ -67,7 +80,7 @@
             <EndColor A="255" R="255" G="255" B="255" />
             <ColorVector ScaleY="1.0000" />
           </AbstractNodeData>
-          <AbstractNodeData Name="lblInfo" ActionTag="968807527" Tag="13" IconVisible="False" LeftMargin="838.0000" RightMargin="18.0000" TopMargin="13.5000" BottomMargin="603.5000" FontSize="20" LabelText="Participants&#xA;- gb&#xA;- hj&#xA;- lacti" ctype="TextObjectData">
+          <AbstractNodeData Name="lblInfo" ActionTag="968807527" Tag="13" VisibleForFrame="False" IconVisible="False" LeftMargin="838.0000" RightMargin="18.0000" TopMargin="13.5000" BottomMargin="534.5000" FontSize="20" LabelText="Participants&#xA;- gb&#xA;- hj&#xA;- lacti" OutlineSize="0" ShadowOffsetX="0" ShadowOffsetY="0" ctype="TextObjectData">
             <Size X="104.0000" Y="92.0000" />
             <AnchorPoint ScaleX="1.0000" ScaleY="1.0000" />
             <Position X="942.0000" Y="626.5000" />

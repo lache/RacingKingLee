@@ -25,9 +25,9 @@ function ArenaScene:bindJoin()
                 local qs = string.format('/join?name=%s&color=red&type=normal', username)
                 self:request(qs, function (res)
                     local resj = json.decode(res, 1)
-                    self:message('INFO - joined ' .. resj.token)
+                    self:message('INFO - joined id ' .. resj.car.id .. ' token ' .. resj.token)
                     self.token = resj.token
-
+                    self.id = tostring(resj.car.id)
                     self:queryFullState()
                 end)
             else
@@ -54,6 +54,7 @@ function ArenaScene:message(msg)
             cc.MoveTo:create(0.6, cc.p(display.cx,display.cy + 30)),
             cc.RemoveSelf:create()
         ))
+    print(msg)
 end
 
 local function split(inputstr, sep)
@@ -78,12 +79,47 @@ function ArenaScene:onFullState(res)
             self:createCar(k)
         end
 
-        self.cars[k]:move(cc.p(display.cx + v[1]/POS_SCALE,
-            display.cy + v[2]/POS_SCALE))
-        self.cars[k]:setRotation(v[3] / math.pi * 180)
+        local car = self.cars[k]
+
+        local x = v[1]
+        local y = v[2]
+        local a = v[3] -- 차체의 각도 (라디안)
+        local ha = v[4] -- 핸들의 각도 (라디안))
+        local th = v[5] -- 액셀 밟은 정도 (-100 ~ 100) 음수면 후진 액셀
+
+        car:move(cc.p(display.cx + x/POS_SCALE,
+            display.cy + y/POS_SCALE))
+        car:setRotation(a / math.pi * 180)
+        car:setScale(1.0/POS_SCALE, 1.0/POS_SCALE)
+        if k == self.id then
+            self:onPlayerHandleState(ha)
+            self:onPlayerAccelState(th)
+
+            if not car.label then
+                car.label = cc.Label:createWithSystemFont('Player', 'Arial', 30)
+                    :addTo(car)
+            end
+        end
     end
 
+    self:scaleBg()
+
     self:queryFullState()
+end
+
+function ArenaScene:scaleBg()
+    local bg = self.resourceNode_:getChildByTag(11)
+    bg:setScale(1.0/POS_SCALE, 1.0/POS_SCALE)
+end
+
+function ArenaScene:onPlayerHandleState(handleRad)
+    local handle = self.resourceNode_:getChildByTag(17)
+    handle:setRotation(handleRad / math.pi * 180)
+end
+
+function ArenaScene:onPlayerAccelState(throttle)
+    local th = self.resourceNode_:getChildByTag(14)
+    th:setRotation(math.abs(throttle) / 100 * 40)
 end
 
 function ArenaScene:createCar(k)
@@ -154,15 +190,25 @@ function ArenaScene:createKeyboardHandler()
         elseif keyCode == cc.KeyCode.KEY_MENU then
         elseif keyCode == cc.KeyCode.KEY_S then
         elseif keyCode == cc.KeyCode.KEY_UP_ARROW then
-            self:throttleDelta(50)
+            self:throttleDelta(10)
         elseif keyCode == cc.KeyCode.KEY_DOWN_ARROW then
-            self:throttleDelta(-50)
+            self:throttleDelta(-10)
         elseif keyCode == cc.KeyCode.KEY_LEFT_ARROW then
             self:handleDelta(-math.pi / 256)
         elseif keyCode == cc.KeyCode.KEY_RIGHT_ARROW then
             self:handleDelta(math.pi / 256)
         elseif keyCode == cc.KeyCode.KEY_B then
             self:brake()
+        elseif keyCode == cc.KeyCode.KEY_1 then
+            POS_SCALE = 1
+        elseif keyCode == cc.KeyCode.KEY_2 then
+            POS_SCALE = 2
+        elseif keyCode == cc.KeyCode.KEY_3 then
+            POS_SCALE = 3
+        elseif keyCode == cc.KeyCode.KEY_4 then
+            POS_SCALE = 4
+        elseif keyCode == cc.KeyCode.KEY_5 then
+            POS_SCALE = 5
         end
     end
 
