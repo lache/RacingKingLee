@@ -4,12 +4,42 @@ ArenaScene.RESOURCE_FILENAME = 'ArenaScene.csb'
 
 require('json')
 
-local POS_SCALE = 1
+local POS_SCALE = 5
 
 function ArenaScene:onCreate()
     self.cars = {}
+    self.drawings = {}
     self:createKeyboardHandler()
     self:bindJoin()
+    self:resetStageDraw()
+end
+
+function ArenaScene:resetStageDraw()
+    for k, v in pairs(self.drawings) do
+        v:removeSelf()
+    end
+    self.drawings = {}
+
+    local fu = cc.FileUtils:getInstance()
+    local stageStr = fu:getStringFromFile('test-stage.json')
+    local stageData = json.decode(stageStr, 1)
+
+    for k, v in ipairs(stageData.stageObjects) do
+        print(v.type)
+        local color
+        if v.type == 'start' then
+            color = { r = 20, g = 10, b = 200}
+        elseif v.type == 'finish' then
+            color = { r = 0, g = 230, b = 10 }
+        else
+            color = { r = 190, g = 20, b = 20 }
+        end
+        local d = display.newLayer(color, { width = v.width / POS_SCALE, height = v.height / POS_SCALE })
+            :move(display.cx + (v.x - v.width / 2) / POS_SCALE, display.cy + (v.y - v.height / 2) / POS_SCALE)
+            :addTo(self)
+
+        self.drawings[d] = d
+    end
 end
 
 function ArenaScene:bindJoin()
@@ -201,14 +231,19 @@ function ArenaScene:createKeyboardHandler()
             self:brake()
         elseif keyCode == cc.KeyCode.KEY_1 then
             POS_SCALE = 1
+            self:resetStageDraw()
         elseif keyCode == cc.KeyCode.KEY_2 then
             POS_SCALE = 2
+            self:resetStageDraw()
         elseif keyCode == cc.KeyCode.KEY_3 then
             POS_SCALE = 3
+            self:resetStageDraw()
         elseif keyCode == cc.KeyCode.KEY_4 then
             POS_SCALE = 4
+            self:resetStageDraw()
         elseif keyCode == cc.KeyCode.KEY_5 then
             POS_SCALE = 5
+            self:resetStageDraw()
         end
     end
 
