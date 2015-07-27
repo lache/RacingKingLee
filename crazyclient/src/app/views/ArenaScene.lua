@@ -9,6 +9,7 @@ local POS_SCALE = 5
 function ArenaScene:onCreate()
     self.cars = {}
     self.drawings = {}
+    self.stageNode = self.resourceNode_:getChildByTag(19)
     self:createKeyboardHandler()
     self:bindJoin()
     self:resetStageDraw()
@@ -36,10 +37,13 @@ function ArenaScene:resetStageDraw()
         end
         local d = display.newLayer(color, { width = v.width / POS_SCALE, height = v.height / POS_SCALE })
             :move(display.cx + (v.x - v.width / 2) / POS_SCALE, display.cy + (v.y - v.height / 2) / POS_SCALE)
-            :addTo(self)
+            :addTo(self.stageNode)
 
         self.drawings[d] = d
     end
+
+    local bg = self.resourceNode_:getChildByTag(11)
+    bg:setScale(1 / POS_SCALE, 1 / POS_SCALE)
 end
 
 function ArenaScene:bindJoin()

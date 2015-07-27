@@ -6,7 +6,7 @@
       <ObjectData Name="Scene" Tag="5" ctype="GameNodeObjectData">
         <Size X="960.0000" Y="640.0000" />
         <Children>
-          <AbstractNodeData Name="Panel_1" CanEdit="False" ActionTag="-998117587" Tag="12" IconVisible="False" TouchEnable="True" ComboBoxIndex="1" ColorAngle="90.0000" ctype="PanelObjectData">
+          <AbstractNodeData Name="Panel_1" CanEdit="False" ActionTag="814472493" Tag="20" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" PercentWidthEnable="True" PercentHeightEnable="True" PercentWidthEnabled="True" PercentHeightEnabled="True" TouchEnable="True" ComboBoxIndex="1" ColorAngle="90.0000" ctype="PanelObjectData">
             <Size X="960.0000" Y="640.0000" />
             <AnchorPoint />
             <Position />
@@ -29,6 +29,15 @@
             <PreSize />
             <FileData Type="Normal" Path="bg.png" Plist="" />
             <BlendFunc Src="770" Dst="771" />
+          </AbstractNodeData>
+          <AbstractNodeData Name="stageNode" ActionTag="-111711826" Tag="19" IconVisible="True" RightMargin="960.0000" TopMargin="640.0000" ctype="SingleNodeObjectData">
+            <Size />
+            <AnchorPoint />
+            <Position />
+            <Scale ScaleX="1.0000" ScaleY="1.0000" />
+            <CColor A="255" R="255" G="255" B="255" />
+            <PrePosition />
+            <PreSize />
           </AbstractNodeData>
           <AbstractNodeData Name="strTitle" CanEdit="False" ActionTag="18326092" Tag="6" IconVisible="False" PositionPercentXEnabled="True" PositionPercentYEnabled="True" LeftMargin="425.0000" RightMargin="425.0000" BottomMargin="594.0000" FontSize="20" LabelText="Crazy Arena&#xA;" HorizontalAlignmentType="HT_Center" VerticalAlignmentType="VT_Center" OutlineSize="0" ShadowOffsetX="0" ShadowOffsetY="0" ctype="TextObjectData">
             <Size X="110.0000" Y="46.0000" />
