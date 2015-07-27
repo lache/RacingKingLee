@@ -9,6 +9,8 @@ class vector:
         self.X = 0.0
         self.y = 0.0
 
+    def __str__(self):
+        return '{x:%s, y:%s}' % (self.x, self.y)
 
 class car:
 
@@ -152,26 +154,26 @@ class car:
 
         #bangz: velocity.x = fVLong_, velocity.y = fVLat_
         if self.velocity.x == 0:        # TODO: fix math.singularity
-            self.rotAngle = 0
+            self.rot_angle = 0
         else:
-            self.rotAngle = math.atan2(self.yawspeed, self.velocity.x)
+            self.rot_angle = math.atan2(self.yawspeed, self.velocity.x)
 
         # Calculate the side slip angle of the car (a.k.a. beta)
         if self.velocity.x == 0:        # TODO: fix math.singularity
-            self.sideSlip = 0
+            self.side_slip = 0
         else:
-            self.sideSlip = math.atan2(self.velocity.y, self.velocity.x)
+            self.side_slip = math.atan2(self.velocity.y, self.velocity.x)
 
         # Calculate slip angles for front and rear wheels (a.k.a. alpha)
-        self.slipangleFront = self.sideSlip + self.rotAngle - self.steer_angle
-        self.slipangleRear = self.sideSlip - self.rotAngle
+        self.slipangle_front = self.side_slip + self.rot_angle - self.steer_angle
+        self.slipangle_rear = self.side_slip - self.rot_angle
 
         # weight per axle = half car mass times 1G (=9.8m/s^2) 
         self.weight = self.mass * 9.8 * 0.5
 
         # lateral force on front wheels = (Ca * slip angle) capped to friction circle * load
         self.flatf.x = 0
-        self.flatf.y = self.CA_F * self.slipangleFront
+        self.flatf.y = self.CA_F * self.slipangle_front
         self.flatf.y = min(self.MAX_GRIP, self.flatf.y)
         self.flatf.y = max(-self.MAX_GRIP, self.flatf.y)
         self.flatf.y *= self.weight
@@ -180,7 +182,7 @@ class car:
 
         # lateral force on rear wheels
         self.flatr.x = 0
-        self.flatr.y = self.CA_R * self.slipangleRear
+        self.flatr.y = self.CA_R * self.slipangle_rear
         self.flatr.y = min(self.MAX_GRIP, self.flatr.y)
         self.flatr.y = max(-self.MAX_GRIP, self.flatr.y)
         self.flatr.y *= self.weight
@@ -212,7 +214,7 @@ class car:
         self.acceleration.x = self.force.x / self.mass
         self.acceleration.y = self.force.y / self.mass
 
-        self.angularAcceleration = self.torque / self.inertia
+        self.angular_acceleration = self.torque / self.inertia
 
         # Velocity and position
 
@@ -235,16 +237,52 @@ class car:
 
         # integrate angular acceleration to get angular velocity
         #
-        self.angular_velocity += delta_t * self.angularAcceleration
+        self.angular_velocity += delta_t * self.angular_acceleration
 
         # integrate angular velocity to get angular orientation
         #
         self.angle += delta_t * self.angular_velocity
 
+    def __str__(self):
+        return str(self.__dict__)
 
 def main():
     my_car = car('john', 'red', 'truck')
-    my_car.throttle = 100
+    my_car.throttle = 10
+    my_car.steer_angle = my_car.PI / 256.0
+    for i in range(0, 100):
+        my_car.move_tick(16.0 / 1000.0)
+
+    print my_car.steer_angle
+    print my_car.throttle
+    print my_car.brake
+    print my_car.rear_slip
+    print my_car.front_slip
+    print my_car.angle
+    print my_car.position_wc
+    print my_car.velocity_wc
+    print my_car.angular_velocity
+    print my_car.velocity
+    print my_car.acceleration_wc
+    print my_car.rot_angle
+    print my_car.side_slip
+    print my_car.slipangle_front
+    print my_car.slipangle_rear
+    print my_car.force
+    print my_car.resistance
+    print my_car.acceleration
+    print my_car.torque
+    print my_car.angular_acceleration
+    print my_car.sn
+    print my_car.cs
+    print my_car.yawspeed
+    print my_car.weight
+    print my_car.ftraction
+    print my_car.flatf
+    print my_car.flatr
+
+
+    return
 
     print car.PI
     

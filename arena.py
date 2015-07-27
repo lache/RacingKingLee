@@ -9,7 +9,7 @@ class racingArena(threading.Thread):
 
     keep_racing = True
 
-    max_player_count = 100
+    max_player_count = 1000
     player_count = 0
 
     id_token_list = []
@@ -22,7 +22,7 @@ class racingArena(threading.Thread):
     car_list = []
 
     car_info_dict = {}
-    cur_pos_list = []
+    car_pos_dict = {}
 
     register_lock = threading.Lock()
 
@@ -63,7 +63,7 @@ class racingArena(threading.Thread):
             
             self.car_list[id] = user_car
 
-            self.cur_pos_list.append(user_car.get_pos())
+            self.car_pos_dict[id] = user_car.get_pos()
             self.car_info_dict[id] = user_car.get_info()
 
             self.player_count += 1
@@ -75,6 +75,42 @@ class racingArena(threading.Thread):
                 time.sleep(0.001)
 
         return user_car
+
+    
+    def deregister(self, id):
+
+        deregistered = False
+        while deregistered == False:
+
+            self.register_lock.acquire()
+            
+            if id not in self.id_token_list:
+                return False
+
+            token = self.id_token_list[id]
+
+            self.id_token_list[id] = None
+            self.token_id_dict.pop(token, None)
+
+            self.op_accel_list[id] = None
+            self.op_handle_list[id] = None
+            self.op_brake_list[id] = None
+            
+            self.car_list[id] = None
+
+            self.car_pos_dict.pop(id)
+            self.car_info_dict.pop(id)
+
+            self.player_count -= 1
+            deregistered = True
+            
+            self.register_lock.release()
+
+            if deregistered == False:
+                time.sleep(0.001)
+
+        return True
+
 
 
     def run(self):
@@ -116,7 +152,7 @@ class racingArena(threading.Thread):
                 cur_car.move_tick(idle / 1000.0)
 
                 # update position info for API
-                self.cur_pos_list[id] = cur_car.get_pos()
+                self.car_pos_dict[id] = cur_car.get_pos()
 
             end_time = datetime.now()
             
