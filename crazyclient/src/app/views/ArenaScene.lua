@@ -12,7 +12,15 @@ function ArenaScene:onCreate()
     self.stageNode = self.resourceNode_:getChildByTag(19)
     self:createKeyboardHandler()
     self:bindJoin()
-    self:resetStageDraw()
+    self:requestStageData()
+end
+
+function ArenaScene:requestStageData()
+    self:request('/stage_objects', function (res)
+        self.stageData = json.decode(res, 1)
+        print('self stageData', self.stageData)
+        self:resetStageDraw()
+    end)
 end
 
 function ArenaScene:resetStageDraw()
@@ -21,11 +29,13 @@ function ArenaScene:resetStageDraw()
     end
     self.drawings = {}
 
+    --[[
     local fu = cc.FileUtils:getInstance()
     local stageStr = fu:getStringFromFile('test-stage.json')
     local stageData = json.decode(stageStr, 1)
+    ]]
 
-    for k, v in ipairs(stageData.stageObjects) do
+    for k, v in pairs(self.stageData) do
         print(v.type)
         local color
         if v.type == 'start' then
@@ -148,7 +158,7 @@ end
 
 function ArenaScene:onPlayerHandleState(handleRad)
     local handle = self.resourceNode_:getChildByTag(17)
-    handle:setRotation(handleRad / math.pi * 180)
+    handle:setRotation(handleRad / math.pi * 180 * 10)
 end
 
 function ArenaScene:onPlayerAccelState(throttle)
