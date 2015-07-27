@@ -237,6 +237,13 @@ class BrakeHandler(tornado.web.RequestHandler):
         self.flush()
 
 
+class StageObjectsHandler(tornado.web.RequestHandler):
+    def get(self):
+        global racing_arena
+
+        self.write(json.dumps(racing_arena.stage_object_dict))
+        self.flush()
+
 
 application = tornado.web.Application([
     (r"/join", JoinHandler),
@@ -247,7 +254,7 @@ application = tornado.web.Application([
     (r"/accel", AccelHandler),
     (r"/handle", HandleHandler),
     (r"/brake", BrakeHandler),
-    (r"/", BrakeHandler),
+    (r"/stage_objects", StageObjectsHandler),
 
 ])
 
