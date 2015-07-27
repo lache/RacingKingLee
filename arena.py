@@ -4,6 +4,8 @@ import car
 import threading
 import time
 from datetime import datetime
+import ujson as json
+
 
 class racingArena(threading.Thread):
 
@@ -26,6 +28,8 @@ class racingArena(threading.Thread):
 
     register_lock = threading.Lock()
 
+    stage_object_dict = {}
+
     def __init__(self):
         
         max_count = self.max_player_count
@@ -37,6 +41,13 @@ class racingArena(threading.Thread):
         self.op_brake_list = [None] * max_count
         
         self.car_list = [None] * max_count
+
+        idx = 0
+        with open('objects.json') as data_file:
+            stage_objects = json.load(data_file)
+        for item in stage_objects['stageObjects']:
+            self.stage_object_dict[idx] = item
+            idx += 1
 
         threading.Thread.__init__(self)
 
@@ -117,7 +128,7 @@ class racingArena(threading.Thread):
 
         while self.keep_racing:
 
-            idle = 16
+            idle = 10
             start_time = datetime.now()
             
             for id in range(0, self.player_count):
@@ -149,7 +160,7 @@ class racingArena(threading.Thread):
                 self.op_brake_list[id] = None
 
                 # update position
-                cur_car.move_tick(idle / 1000.0)
+                cur_car.move_tick(idle / 500.0)
 
                 # update position info for API
                 self.car_pos_dict[id] = cur_car.get_pos()
